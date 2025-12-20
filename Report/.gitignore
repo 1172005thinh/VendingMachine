@@ -1,0 +1,9 @@
+# Ignore misc LATEX files
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.md

@@ -242,7 +242,7 @@ Error states handle: out-of-stock, quantity errors, payment errors, and timeouts
 ## Authors
 
 - **Nguyen Hung Thinh** - *Project Development*
-- **Le Thai Loc** - *Project Development*
+- **Le The Loc** - *Project Development*
 - **Tran Doan Hoang Lam** - *FSM Design & Implementation*
 
 **Institution**: Ho Chi Minh City University of Technology (HCMUT)
