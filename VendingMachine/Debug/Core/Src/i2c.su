@@ -1,0 +1,9 @@
+i2c.c:10:6:I2C_init	40	static
+i2c.c:32:6:SDA_in	24	static
+i2c.c:41:6:I2C_Delay	16	static,ignoring_inline_asm
+i2c.c:48:6:SDA_out	24	static
+i2c.c:56:6:I2C_Start	8	static
+i2c.c:67:6:I2C_STOP	8	static
+i2c.c:78:15:I2C_CheckAck	16	static
+i2c.c:93:6:I2C_Write	24	static
+i2c.c:108:15:I2C_Read	16	static

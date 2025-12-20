@@ -1,0 +1,4 @@
+sensor.c:13:6:delay_us	16	static
+sensor.c:19:6:Sensor_Init	8	static
+sensor.c:23:6:Sensor_Trigger	8	static
+sensor.c:33:6:HAL_TIM_IC_CaptureCallback	16	static

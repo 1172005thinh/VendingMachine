@@ -1,0 +1,13 @@
+tv_lcd_i2c.c:6:6:PCD8574_write	16	static
+tv_lcd_i2c.c:21:6:ledOFF	8	static
+tv_lcd_i2c.c:26:6:ledON	8	static
+tv_lcd_i2c.c:31:6:LCD_Enable	16	static,ignoring_inline_asm
+tv_lcd_i2c.c:40:6:LCD_Send4Bit	16	static
+tv_lcd_i2c.c:48:6:LCD_Send1Byte	16	static
+tv_lcd_i2c.c:56:6:lcd_gotoxy	40	static
+tv_lcd_i2c.c:61:6:LCD_cursor	16	static
+tv_lcd_i2c.c:67:6:lcd_write_string	16	static
+tv_lcd_i2c.c:79:6:lcd_write_char	16	static
+tv_lcd_i2c.c:88:6:lcd_clear	8	static
+tv_lcd_i2c.c:103:6:lcd_init	16	static
+tv_lcd_i2c.c:127:6:lcd_center_text	24	static

@@ -1,0 +1,11 @@
+# Ignore video files
+*.mkv
+*.mp4
+*.mov
+*.av1
+
+# Ignore audio files
+*.wav
+*.aac
+*.mp3
+*.flac

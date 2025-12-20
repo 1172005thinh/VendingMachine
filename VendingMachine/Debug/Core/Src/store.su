@@ -1,0 +1,5 @@
+store.c:18:6:Store_SaveToFlash	48	static
+store.c:50:6:init	80	static
+store.c:90:7:getSkinByID	16	static
+store.c:95:5:updateQuantity	24	static
+store.c:103:5:updatePrice	24	static

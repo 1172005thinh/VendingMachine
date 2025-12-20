@@ -1,0 +1,2 @@
+keypad.c:36:6:Keypad_LED_Init	32	static
+keypad.c:73:6:Keypad_Scan	16	static

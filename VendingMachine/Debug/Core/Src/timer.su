@@ -1,0 +1,6 @@
+timer.c:25:6:setInitTimer	16	static
+timer.c:30:6:setWelcomeTimer	16	static
+timer.c:35:6:setTimeoutTimer	16	static
+timer.c:40:6:setMessageTimer	16	static
+timer.c:45:6:setSensorTimer	16	static
+timer.c:50:6:timerRun	4	static
