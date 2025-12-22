@@ -702,7 +702,7 @@ int admin_log(void) {
 
 \subsection{Tổ chức Mã nguồn và Tính Mô-đun}
 
-\subsubsection{Cấu trúc Mô-đun}
+\paragraph{Cấu trúc Mô-đun:}
 
 Phần mềm tuân theo kiến trúc mô-đun với sự phân tách rõ ràng các mối quan tâm:
 
@@ -734,7 +734,7 @@ ADMIN.c/h & Xác thực quản trị, xác minh mật khẩu \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Phụ thuộc Mô-đun}
+\paragraph{Phụ thuộc Mô-đun:}
 
 Phân cấp phụ thuộc (từ trên xuống dưới):
 \begin{verbatim}
@@ -1101,21 +1101,204 @@ break;
 break;
 \end{lstlisting}
 
-\subsection{Quản lý Hiển thị và Xử lý Lỗi}
+\subsection{Giao diện hiển thị}
 
-Hệ thống sử dụng các hàm định dạng văn bản để căn giữa nội dung trên màn hình LCD 16x2. Cơ chế xử lý lỗi bao gồm xác thực đầu vào (số lượng, mệnh giá tiền) và giới hạn số lần nhập sai liên tiếp để ngăn chặn hành vi spam hoặc lỗi hệ thống.
+\paragraph{Các hàm hiển thị}
 
-\subsection{Tối ưu hóa Hiệu năng}
+.
 
-Để đảm bảo hiệu năng thời gian thực, hệ thống áp dụng các kỹ thuật tối ưu hóa như:
-\begin{itemize}[leftmargin=*]
-    \item Chỉ cập nhật màn hình LCD khi nội dung thay đổi.
-    \item Sử dụng ngắt SysTick 1ms duy nhất cho tất cả các bộ định thời phần mềm.
-    \item Giảm thiểu số lần ghi vào bộ nhớ Flash bằng cách kiểm tra sự thay đổi dữ liệu trước khi ghi.
-\end{itemize}
+\begin{lstlisting}[language=C, caption={Các hàm hiển thị LCD}]
+void lcd_center_text(int row, char *str) {
+    int len = strlen(str);
+    int padding = 0;
+    if (len < 16) {
+        padding = (16 - len) / 2;
+    }
+    lcd_gotoxy(padding, row);
+    lcd_write_string(str);
+}
+
+void display_current_skin(uint8_t id) {
+    Skin* skin = getSkinByID(id);
+    if (skin == NULL) return;
+    
+    char buffer[22];
+    
+    // Line 1: ID and skin name
+    lcd_gotoxy(0, 0);
+    snprintf(buffer, sizeof(buffer), "%d. %-12s", 
+             skin->id, skin->skinName);
+    lcd_write_string(buffer);
+    
+    // Line 2: Player name
+    lcd_gotoxy(0, 1);
+    snprintf(buffer, sizeof(buffer), "%-16s", 
+             skin->playerName);
+    lcd_write_string(buffer);
+}
+
+void display_skin_detail(uint8_t id) {
+    Skin* skin = getSkinByID(id);
+    if (skin == NULL) return;
+    
+    char buffer[17];
+    
+    // Line 1: Available quantity
+    lcd_gotoxy(0, 0);
+    snprintf(buffer, sizeof(buffer), "Available: %-5lu", 
+             (unsigned long)skin->quantity);
+    lcd_write_string(buffer);
+    
+    // Line 2: Price and ID
+    lcd_gotoxy(0, 1);
+    snprintf(buffer, sizeof(buffer), "Price: %lu #%-3d", 
+             (unsigned long)skin->price, skin->id);
+    lcd_write_string(buffer);
+}
+\end{lstlisting}
+
+\subsection{Cơ chế Xử lý Lỗi}
+
+\paragraph{Xác thực Đầu vào}
+
+.
+
+\begin{lstlisting}[language=C, caption={Các hàm Xác thực Đầu vào}]
+// Quantity validation
+int validate_quantity(uint32_t quantity, uint32_t available) {
+    if (quantity <= 0 || quantity > 9) {
+        return ERROR_INVALID_RANGE;
+    }
+    if (quantity > available) {
+        return ERROR_INSUFFICIENT_STOCK;
+    }
+    return VALIDATION_OK;
+}
+
+// Payment validation
+int is_valid_money(uint32_t amount) {
+    uint32_t valid_denominations[] = {
+        5000, 10000, 20000, 50000, 
+        100000, 200000, 500000
+    };
+    
+    for (int i = 0; i < 7; i++) {
+        if (amount == valid_denominations[i]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\paragraph{Số lần Lỗi Tối đa}
+
+.
+
+\begin{lstlisting}[language=C, caption={Không quá 5 lần Lỗi}]
+// In CHOOSING_QUANTITY state
+if (validation_error) {
+    error_count++;
+    
+    if (error_count >= 5) {
+        status = MAX_ERROR_STATE;
+        lcd_clear();
+        lcd_write_string("5 TIMES WRONG!");
+        lcd_gotoxy(0, 1);
+        lcd_write_string("DONT WANNA BUY?");
+        setMessageTimer(3000);
+    } else {
+        status = QUANTITY_ERROR;
+        // Display specific error message
+        setMessageTimer(3000);
+    }
+}
+
+// Reset counter on successful input
+if (validation_success) {
+    error_count = 0;
+}
+\end{lstlisting}
+
+\subsection{Tối ưu hiệu năng}
+
+\paragraph{Giảm số lần cập nhật hiển thị:}
+
+Chỉ cập nhật LCD khi nội dung thay đổi:
+
+\begin{lstlisting}[language=C, caption={Giảm số lần cập nhật hiển thị}]
+static uint8_t last_displayed_id = 0;
+
+void display_current_skin(uint8_t id) {
+    if (id == last_displayed_id) {
+        return;  // No change, skip update
+    }
+    
+    last_displayed_id = id;
+    // Perform actual display update
+}
+\end{lstlisting}
+
+\paragraph{Tối ưu Timer:}
+
+Chỉ sử dụng một ngắt SysTick 1ms duy nhất cho tất cả bộ định thời:
+
+\begin{lstlisting}[language=C, caption={Tối ưu Quản lý Timer}]
+void SysTick_Handler(void) {
+    HAL_IncTick();
+    timerRun();  // Update all software timers
+}
+\end{lstlisting}
+
+\paragraph{Tối ưu khi ghi Flash:}
+
+Chỉ ghi Flash khi dữ liệu thực sự thay đổi:
+
+\begin{lstlisting}[language=C, caption={Tối ưu khi ghi Flash}]
+int updateQuantity(uint8_t ID, uint32_t NEW_QUANTITY) {
+    Skin* skin = getSkinByID(ID);
+    if (skin == NULL || NEW_QUANTITY > 9) return 0;
+    
+    if (skin->quantity == NEW_QUANTITY) {
+        return 1;  // No change, skip Flash write
+    }
+    
+    skin->quantity = NEW_QUANTITY;
+    Store_SaveToFlash();
+    return 1;
+}
+\end{lstlisting}
+
+\subsection{Phát triển và Debug}
+
+\paragraph{Debug bằng UART:}
+
+Để debug trong quá trình phát triển, có thể thêm giao tiếp UART:
+
+\begin{lstlisting}[language=C, caption={Ví dụ Debug}]
+#ifdef DEBUG_MODE
+    printf("State: %d -> %d\n", old_status, status);
+    printf("Distance: %d cm\n", Distance);
+    printf("Key pressed: %c\n", key);
+#endif
+\end{lstlisting}
+
+\paragraph{Giám sát Máy trạng thái với LED:}
+
+Dùng một LED để chỉ báo trạng thái hệ thống:
+
+\begin{lstlisting}[language=C, caption={Trạng thái LED}]
+void update_status_led(void) {
+    if (status == WAIT_SENSOR) {
+        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);  // Off
+    } else {
+        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET); // On
+    }
+}
+\end{lstlisting}
 
 
-\section{Trình diễn}
+\section{Demo}
 
 Phần này trình bày các quy trình kiểm thử, kết quả vận hành và phân tích hiệu năng của hệ thống máy bán hàng tự động.\newline
 Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1COVcYWAQKlN}
