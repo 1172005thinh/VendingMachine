@@ -72,10 +72,11 @@
 \title{
     \Large\textbf{TRƯỜNG ĐẠI HỌC BÁCH KHOA TP.HCM}\\
     \large Khoa Khoa học và Kỹ thuật Máy tính\\
-    \vspace{2cm}
+    \vspace{0.5cm}
+    \includegraphics[width=8cm]{../Pictures/hcmut.png}\\
     \rule{\textwidth}{1.5pt}\\
     \vspace{0.5cm}
-    \Huge\textbf{HỆ THỐNG MÁY BÁN HÀNG TỰ ĐỘNG}\\
+    \Huge\textbf{MÁY BÁN HÀNG TỰ ĐỘNG}\\
     \Large\textbf{Báo cáo Kỹ thuật}\\
     \vspace{0.3cm}
     \Large Đồ án Thiết kế Luận lý với Vi điều khiển STM32\\
@@ -83,6 +84,9 @@
 }
 
 \author{
+    \textbf{Giảng viên hướng dẫn:}\\
+    Nguyễn Thành Lộc\\
+    \vspace{1cm}\\
     \textbf{Nhóm tác giả:}\\
     Nguyễn Hưng Thịnh\\
     Lê Thế Lộc\\
@@ -92,7 +96,8 @@
     Trường Đại học Bách Khoa TP.HCM (HCMUT)\\
 }
 
-\date{Ngày 20 tháng 12 năm 2025}
+% Get current date in Vietnamese format automatically
+\date{\today}
 
 \begin{document}
 
@@ -103,7 +108,26 @@
 
 % Abstract
 \begin{abstract}
-Báo cáo kỹ thuật này trình bày quá trình thiết kế và hiện thực hệ thống máy bán hàng tự động thông minh sử dụng vi điều khiển STM32F103C8T6. Hệ thống được thiết kế đặc biệt để bán các vật phẩm trong trò chơi (Trang phục đội tuyển SKT trong Liên Minh Huyền Thoại) và có các tính năng như tự động phát hiện khách hàng thông qua cảm biến siêu âm, giao diện LCD tương tác với bàn phím, quản lý kho hàng không bay hơi sử dụng bộ nhớ Flash, xử lý thanh toán toàn diện và chế độ quản trị bảo mật để kiểm soát kho hàng. Dự án minh họa các ứng dụng thực tế của nguyên lý hệ thống nhúng bao gồm thiết kế máy trạng thái hữu hạn, giao tiếp ngoại vi, điều khiển thời gian thực và lưu trữ dữ liệu. Việc hiện thực sử dụng thư viện STM32 HAL và bao gồm các trình điều khiển tùy chỉnh cho giao tiếp LCD I2C, quét bàn phím ma trận 4x4 và đo khoảng cách siêu âm HC-SR04. Các tính năng chính bao gồm tự động bật nguồn thông qua phát hiện khách hàng, xử lý giao dịch đa trạng thái với xử lý lỗi và lưu trữ kho hàng dựa trên bộ nhớ Flash qua các chu kỳ nguồn.
+Báo cáo kỹ thuật này trình bày quá trình thiết kế 
+và hiện thực hệ thống máy bán hàng tự động thông minh 
+sử dụng vi điều khiển STM32F103C8T6. 
+Hệ thống được thiết kế đặc biệt để bán các vật phẩm trong trò chơi 
+(Trang phục đội tuyển SKT trong Liên Minh Huyền Thoại) và có các tính năng 
+như tự động phát hiện khách hàng thông qua cảm biến siêu âm, 
+giao diện LCD tương tác với bàn phím, 
+quản lý kho hàng sử dụng bộ nhớ Flash, 
+xử lý thanh toán toàn diện 
+và chế độ quản trị bảo mật để kiểm soát kho hàng. 
+Dự án minh họa các ứng dụng thực tế của 
+nguyên lý hệ thống nhúng bao gồm thiết kế 
+máy trạng thái hữu hạn, giao tiếp ngoại vi, 
+điều khiển thời gian thực và lưu trữ dữ liệu. 
+Việc hiện thực sử dụng thư viện STM32 HAL và 
+bao gồm các trình điều khiển tùy chỉnh cho giao tiếp LCD I2C, 
+quét bàn phím ma trận 4x4 và đo khoảng cách siêu âm HC-SR04. 
+Các tính năng chính bao gồm tự động bật nguồn thông qua đo khoảng cách, 
+xử lý giao dịch đa trạng thái với xử lý lỗi và lưu trữ kho hàng 
+dựa trên bộ nhớ Flash.
 \end{abstract}
 
 \newpage
@@ -114,80 +138,6 @@ Báo cáo kỹ thuật này trình bày quá trình thiết kế và hiện th�
 \newpage
 
 % Main content
-\section{Giới thiệu}
-
-\subsection{Bối cảnh và Động lực}
-
-Máy bán hàng tự động đại diện cho một ứng dụng quan trọng của hệ thống nhúng trong tự động hóa bán lẻ hiện đại. Các hệ thống này đòi hỏi sự tích hợp phần cứng-phần mềm đáng tin cậy, phản hồi thời gian thực với đầu vào của người dùng và cơ chế xử lý lỗi mạnh mẽ. Thị trường máy bán hàng tự động toàn cầu tiếp tục mở rộng, với nhu cầu ngày càng tăng về các giải pháp bán lẻ tự động thông minh, thân thiện với người dùng có thể hoạt động tự chủ với sự can thiệp tối thiểu của con người.
-
-Dự án này hiện thực một hệ thống máy bán hàng tự động toàn diện sử dụng vi điều khiển STM32F103C8T6, hướng đến thị trường vật phẩm game bằng cách bán các trang phục đội tuyển SKT trong Liên Minh Huyền Thoại. Việc lựa chọn lĩnh vực sản phẩm cụ thể này cho phép minh họa các nguyên tắc quản lý kho hàng trong khi vẫn duy trì sự hấp dẫn đối với cộng đồng game thủ. Hệ thống giải quyết một số thách thức chính trong thiết kế hệ thống nhúng bao gồm quản lý trạng thái, giao tiếp ngoại vi, lưu trữ dữ liệu và tối ưu hóa trải nghiệm người dùng.
-
-\subsection{Mục tiêu Dự án}
-
-Các mục tiêu chính của dự án này là:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Tích hợp Phần cứng:} Thiết kế và hiện thực một hệ thống nhúng hoàn chỉnh tích hợp nhiều thiết bị ngoại vi bao gồm màn hình LCD, bàn phím ma trận, cảm biến siêu âm và bộ nhớ Flash để lưu trữ dữ liệu.
-    
-    \item \textbf{Hiện thực Máy trạng thái:} Phát triển kiến trúc máy trạng thái hữu hạn mạnh mẽ có khả năng quản lý các luồng giao dịch phức tạp, điều kiện lỗi và chuyển đổi chế độ với 19 trạng thái riêng biệt.
-    
-    \item \textbf{Trải nghiệm Người dùng:} Tạo giao diện trực quan cho phép khách hàng duyệt sản phẩm, chọn số lượng, xử lý thanh toán và nhận phản hồi thông qua các thông báo LCD rõ ràng và xử lý đầu vào nhanh nhạy.
-    
-    \item \textbf{Lưu trữ Dữ liệu:} Hiện thực lưu trữ không bay hơi sử dụng bộ nhớ Flash nội bộ để bảo toàn dữ liệu kho hàng qua các chu kỳ nguồn, đảm bảo tính liên tục của hoạt động kinh doanh.
-    
-    \item \textbf{Bảo mật và Quản trị:} Cung cấp quyền truy cập quản trị được bảo vệ bằng mật khẩu để quản lý kho hàng với bảo mật dựa trên thời gian chờ và cơ chế xác nhận.
-    
-    \item \textbf{Vận hành Tự động:} Cho phép tự động phát hiện khách hàng và kích hoạt hệ thống sử dụng cảm biến siêu âm, giảm tiêu thụ điện năng trong thời gian nhàn rỗi.
-    
-    \item \textbf{Khả năng Chống lỗi:} Hiện thực xử lý lỗi toàn diện bao gồm kiểm tra đầu vào, quản lý thời gian chờ và cơ chế phục hồi để đảm bảo độ tin cậy của hệ thống.
-\end{itemize}
-
-\subsection{Phạm vi và Giới hạn}
-
-\subsubsection{Phạm vi Dự án}
-
-Dự án này bao gồm các thành phần và tính năng sau:
-
-\begin{itemize}[leftmargin=*]
-    \item Firmware nhúng hoàn chỉnh cho vi điều khiển STM32F103C8T6
-    \item Trình điều khiển ngoại vi tùy chỉnh cho LCD, bàn phím và cảm biến siêu âm
-    \item Máy trạng thái hữu hạn với 19 trạng thái để xử lý giao dịch
-    \item Quản lý bộ nhớ Flash để lưu trữ kho hàng
-    \item Chế độ quản trị với xác thực mật khẩu
-    \item Xử lý lỗi và quản lý thời gian chờ
-    \item Phát hiện khách hàng và tự động kích hoạt hệ thống
-    \item Xác thực thanh toán với các mệnh giá tiền tệ Việt Nam
-\end{itemize}
-
-\subsubsection{Giới hạn Hệ thống}
-
-Việc hiện thực hiện tại có các ràng buộc sau:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Dung lượng Kho hàng:} Giới hạn ở 16 sản phẩm với số lượng tối đa 9 đơn vị mỗi mặt hàng
-    \item \textbf{Mô phỏng Thanh toán:} Xử lý thanh toán được mô phỏng thông qua đầu vào bàn phím mà không có phần cứng xử lý tiền tệ thực tế
-    \item \textbf{Xuất hàng:} Không có điều khiển cơ cấu chấp hành vật lý để xuất hàng (nguyên mẫu tập trung vào logic phần mềm)
-    \item \textbf{Giao dịch Đơn lẻ:} Hệ thống xử lý một giao dịch khách hàng tại một thời điểm
-    \item \textbf{Hạn chế Hiển thị:} LCD 16x2 chỉ hiển thị văn bản giới hạn thông tin hiển thị
-    \item \textbf{Dải giá:} Giá sản phẩm có thể điều chỉnh từ 1.000 đến 99.000 VND với bước nhảy 1.000 VND
-    \item \textbf{Giới hạn Bộ nhớ:} 64KB Flash và 20KB RAM hạn chế độ phức tạp của chương trình và lưu trữ dữ liệu
-\end{itemize}
-
-\subsection{Cấu trúc Báo cáo}
-
-Báo cáo này được cấu trúc như sau:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Phần 2 (Tổng quan Hệ thống):} Cung cấp kiến trúc cấp cao, triết lý thiết kế và yêu cầu hệ thống
-    \item \textbf{Phần 3 (Thành phần Phần cứng):} Chi tiết tất cả các thành phần phần cứng bao gồm vi điều khiển, cảm biến, màn hình và thiết bị đầu vào
-    \item \textbf{Phần 4 (Thiết kế Phần mềm):} Giải thích máy trạng thái hữu hạn, hệ thống định thời và kiến trúc phần mềm
-    \item \textbf{Phần 5 (Hiện thực):} Mô tả việc hiện thực các trình điều khiển ngoại vi, thuật toán và các tính năng chính
-    \item \textbf{Phần 6 (Kiểm chứng):} Trình bày kết quả kiểm tra, ví dụ vận hành và phân tích hiệu năng
-    \item \textbf{Phần 7 (Hướng phát triển):} Thảo luận về các cải tiến tiềm năng và cơ hội mở rộng
-    \item \textbf{Phần 8 (Kết luận):} Tóm tắt các thành tựu, bài học kinh nghiệm và kết quả dự án
-    \item \textbf{Phần 9 (Tài liệu tham khảo \& Tác giả):} Liệt kê các tài liệu tham khảo kỹ thuật và đóng góp của tác giả
-\end{itemize}
-
 \newpage
 \section{Tổng quan Hệ thống}
 
@@ -294,8 +244,6 @@ Giao diện ưu tiên trải nghiệm người dùng thông qua:
 
 \subsection{Yêu cầu Hệ thống}
 
-\subsubsection{Yêu cầu Chức năng}
-
 \begin{enumerate}[label=FR\arabic*:, leftmargin=*]
     \item \textbf{Phát hiện Khách hàng:} Hệ thống sẽ phát hiện sự hiện diện của khách hàng trong phạm vi 20cm trong 3 giây liên tiếp và tự động bật nguồn
     
@@ -316,26 +264,6 @@ Giao diện ưu tiên trải nghiệm người dùng thông qua:
     \item \textbf{Xử lý Lỗi:} Hệ thống sẽ xử lý các đầu vào không hợp lệ, thời gian chờ và hiển thị các thông báo lỗi thích hợp
     
     \item \textbf{Hoàn tất Giao dịch:} Khi thanh toán thành công, hệ thống sẽ cập nhật kho hàng và quay lại lựa chọn sản phẩm
-\end{enumerate}
-
-\subsubsection{Yêu cầu Phi chức năng}
-
-\begin{enumerate}[label=NFR\arabic*:, leftmargin=*]
-    \item \textbf{Thời gian Phản hồi:} Hệ thống sẽ phản hồi nhấn phím trong vòng 100ms
-    
-    \item \textbf{Độ tin cậy:} Hệ thống sẽ hoạt động liên tục với các cơ chế phục hồi lỗi ngăn chặn khóa vĩnh viễn
-    
-    \item \textbf{Khả năng Sử dụng:} Giao diện phải trực quan với đường cong học tập tối thiểu cho người dùng lần đầu
-    
-    \item \textbf{Bảo mật:} Chế độ quản trị sẽ yêu cầu mật khẩu 6 chữ số với bảo vệ thời gian chờ
-    
-    \item \textbf{Khả năng Bảo trì:} Mã nguồn phải có tính mô-đun với tài liệu rõ ràng và quy ước đặt tên nhất quán
-    
-    \item \textbf{Hiệu năng:} Cập nhật LCD sẽ hoàn thành trong vòng 50ms để có trải nghiệm người dùng mượt mà
-    
-    \item \textbf{Hiệu quả Tài nguyên:} Chương trình phải phù hợp với giới hạn 64KB Flash và 20KB RAM
-    
-    \item \textbf{Sự mạnh mẽ:} Hệ thống sẽ xử lý nhiễu cảm biến và chống rung đầu vào hiệu quả
 \end{enumerate}
 
 \subsection{Luồng Vận hành Hệ thống}
@@ -404,22 +332,7 @@ Phần này cung cấp thông số kỹ thuật chi tiết và chi tiết tích 
 
 \subsection{Vi điều khiển - STM32F103C8T6}
 
-\subsubsection{Thông số Kỹ thuật}
-
-STM32F103C8T6 (thường được gọi là "Blue Pill") đóng vai trò là đơn vị xử lý trung tâm của hệ thống với các thông số kỹ thuật sau:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Lõi:} Bộ xử lý ARM Cortex-M3 32-bit RISC
-    \item \textbf{Tốc độ Xung nhịp:} Tối đa 72 MHz
-    \item \textbf{Bộ nhớ Flash:} 64 KB (chính thức), thường là 128 KB trong thực tế
-    \item \textbf{SRAM:} 20 KB
-    \item \textbf{Chân GPIO:} 37 chân I/O với đầu vào chịu được 5V
-    \item \textbf{Bộ định thời:} 3x 16-bit mục đích chung, 1x bộ định thời điều khiển nâng cao
-    \item \textbf{Giao tiếp:} 2x I2C, 3x USART, 2x SPI, 1x USB, 1x CAN
-    \item \textbf{ADC:} 2x ADC 12-bit với 10 kênh
-    \item \textbf{Điện áp Hoạt động:} 2.0V đến 3.6V (với I/O chịu được 5V)
-    \item \textbf{Đóng gói:} LQFP48 (7mm × 7mm)
-\end{itemize}
+STM32F103C8T6 (thường được gọi là "Blue Pill") đóng vai trò là đơn vị xử lý trung tâm của hệ thống.
 
 \subsubsection{Lý do Lựa chọn}
 
@@ -460,34 +373,7 @@ PA14 & SWCLK & Xung nhịp Gỡ lỗi Serial Wire \\
 
 \subsection{Mô-đun Hiển thị - LCD 16x2 với I2C}
 
-\subsubsection{Thông số LCD}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Hiển thị:} 16 ký tự × 2 dòng
-    \item \textbf{Bộ điều khiển:} Tương thích HD44780
-    \item \textbf{Đèn nền:} LED xanh dương với độ sáng có thể điều chỉnh
-    \item \textbf{Kích thước Ký tự:} 5×8 điểm
-    \item \textbf{Điện áp Hoạt động:} 5V
-    \item \textbf{Giao diện:} Chế độ song song 4-bit qua bộ chuyển đổi I2C
-\end{itemize}
-
-\subsubsection{Bộ chuyển đổi I2C (PCF8574)}
-
-LCD sử dụng bộ mở rộng I/O I2C PCF8574 để đơn giản hóa việc đi dây:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Chip:} Bộ mở rộng I/O 8-bit PCF8574T
-    \item \textbf{Địa chỉ I2C:} Thường là 0x27 hoặc 0x3F (có thể cấu hình qua jumper)
-    \item \textbf{Điện áp Hoạt động:} 5V
-    \item \textbf{Ánh xạ Chân:}
-    \begin{itemize}
-        \item P0-P3: Chân dữ liệu LCD D4-D7 (chế độ 4-bit)
-        \item P4: Chọn thanh ghi LCD (RS)
-        \item P5: Đọc/Ghi LCD (R/W)
-        \item P6: Cho phép LCD (E)
-        \item P7: Điều khiển đèn nền
-    \end{itemize}
-\end{itemize}
+Hệ thống sử dụng màn hình LCD 16x2 kết hợp với bộ mở rộng I/O I2C PCF8574 để hiển thị thông tin.
 
 \subsubsection{Giao thức Giao tiếp}
 
@@ -510,44 +396,7 @@ Hệ thống hiện thực giao tiếp I2C bit-banged:
 
 \subsection{Thiết bị Đầu vào - Bàn phím Ma trận 4×4}
 
-\subsubsection{Bố cục Bàn phím}
-
-Bàn phím ma trận cung cấp 16 phím được sắp xếp thành 4 hàng và 4 cột:
-
-\begin{table}[H]
-\centering
-\caption{Bố cục Bàn phím}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{1} & \textbf{2} & \textbf{3} & \textbf{U (Lên)} \\
-\hline
-\textbf{4} & \textbf{5} & \textbf{6} & \textbf{D (Xuống)} \\
-\hline
-\textbf{7} & \textbf{8} & \textbf{9} & \textbf{L (Trái)} \\
-\hline
-\textbf{*} & \textbf{0} & \textbf{\#} & \textbf{R (Phải)} \\
-\hline
-\end{tabular}
-\end{table}
-
-\subsubsection{Cơ chế Quét}
-
-Bàn phím hoạt động dựa trên nguyên tắc quét hàng-cột:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Hàng (PA0-PA3):} Cấu hình là chân đầu ra, bình thường ở mức CAO
-    \item \textbf{Cột (PA4-PA7):} Cấu hình là chân đầu vào với điện trở kéo lên bên trong
-\end{itemize}
-
-Thuật toán Quét:
-\begin{enumerate}[leftmargin=*]
-    \item Đặt tất cả các hàng ở mức CAO
-    \item Kéo lần lượt từng hàng xuống mức THẤP
-    \item Đọc tất cả các chân cột
-    \item Nếu bất kỳ cột nào đọc mức THẤP, một phím tại giao điểm hàng-cột đó được nhấn
-    \item Thực hiện chống rung (độ trễ 20ms)
-    \item Chờ nhả phím trước khi trả về ký tự
-\end{enumerate}
+Bàn phím ma trận cung cấp 16 phím được sắp xếp thành 4 hàng và 4 cột, hoạt động dựa trên nguyên tắc quét hàng-cột.
 
 \subsubsection{Chiến lược Chống rung}
 
@@ -568,32 +417,7 @@ if (HAL_GPIO_ReadPin(GPIOA, col_pins[c]) == GPIO_PIN_RESET) {
 
 \subsection{Mô-đun Cảm biến - Cảm biến Siêu âm HC-SR04}
 
-\subsubsection{Thông số Cảm biến}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Điện áp Hoạt động:} 5V DC
-    \item \textbf{Phạm vi Đo:} 2cm đến 400cm
-    \item \textbf{Độ chính xác:} ±3mm
-    \item \textbf{Góc Đo:} Hình nón 15 độ
-    \item \textbf{Đầu vào Kích hoạt:} Xung TTL 10 micro giây
-    \item \textbf{Đầu ra Echo:} Xung TTL tỷ lệ với khoảng cách
-    \item \textbf{Tần số Siêu âm:} 40 kHz
-\end{itemize}
-
-\subsubsection{Nguyên lý Hoạt động}
-
-HC-SR04 sử dụng phép đo thời gian bay (time-of-flight):
-
-\begin{enumerate}[leftmargin=*]
-    \item Vi điều khiển gửi xung CAO 10 micro giây đến chân TRIG
-    \item Cảm biến phát 8 xung siêu âm ở tần số 40 kHz
-    \item Chân ECHO lên mức CAO khi bắt đầu phát
-    \item Sóng siêu âm phản xạ lại từ vật thể và quay trở lại
-    \item Chân ECHO xuống mức THẤP khi phát hiện phản xạ
-    \item Tính toán khoảng cách: $Distance = \frac{Time \times 0.034}{2}$ cm
-\end{enumerate}
-
-Hệ số 0.034 đại diện cho tốc độ âm thanh (340 m/s = 0.034 cm/ micro giây), và chia cho 2 tính đến hành trình khứ hồi.
+HC-SR04 sử dụng phép đo thời gian bay (time-of-flight) để đo khoảng cách.
 
 \subsubsection{Cấu hình Bắt đầu vào Bộ định thời}
 
@@ -616,39 +440,7 @@ Trình tự đo:
 
 \subsection{Bộ nhớ - Flash Nội bộ}
 
-\subsubsection{Tổ chức Bộ nhớ Flash}
-
-Cấu trúc bộ nhớ Flash của STM32F103C8T6:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Tổng Dung lượng:} 64 KB (128 trang × 512 byte) hoặc biến thể 128 KB
-    \item \textbf{Kích thước Trang:} 1 KB mỗi trang
-    \item \textbf{Địa chỉ Cơ sở:} 0x08000000
-    \item \textbf{Sử dụng Ứng dụng:} Các trang 0-62 cho mã chương trình
-    \item \textbf{Lưu trữ Dữ liệu:} Trang 63 (0x0800FC00) để lưu trữ kho hàng
-\end{itemize}
-
-\subsubsection{Quy trình Lập trình Flash}
-
-Các hàm thư viện HAL cho các hoạt động Flash:
-
-\begin{lstlisting}[language=C, caption={Các hoạt động Bộ nhớ Flash}]
-// Unlock Flash for writing
-HAL_FLASH_Unlock();
-
-// Erase page before writing
-FLASH_EraseInitTypeDef EraseInitStruct;
-EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
-EraseInitStruct.PageAddress = FLASH_ADDR_PAGE_63;
-EraseInitStruct.NbPages = 1;
-HAL_FLASHEx_Erase(&EraseInitStruct, &PageError);
-
-// Write data word by word
-HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, data);
-
-// Lock Flash after writing
-HAL_FLASH_Lock();
-\end{lstlisting}
+Hệ thống sử dụng trang cuối cùng (Trang 63) của bộ nhớ Flash nội bộ để lưu trữ dữ liệu kho hàng, đảm bảo dữ liệu được bảo toàn khi mất điện.
 
 \subsubsection{Chiến lược Bảo toàn Dữ liệu}
 
@@ -708,29 +500,7 @@ Cốt lõi của phần mềm máy bán hàng tự động là một máy trạn
 
 \subsubsection{Định nghĩa Trạng thái}
 
-Hệ thống hiện thực các trạng thái sau, được định nghĩa trong \texttt{fsm\_vm.h}:
-
-\begin{lstlisting}[language=C, caption={Định nghĩa Trạng thái FSM}]
-#define INIT                            1
-#define WAIT_SENSOR                     2
-#define WELCOME_SECTION                 3
-#define CHOOSING_SKIN                   4
-#define DISPLAY_INFO                    5
-#define CHOOSING_QUANTITY               6
-#define OUT_OF_STOCK_NOTIFICATION       7
-#define QUANTITY_ERROR                  8
-#define MAX_ERROR_STATE                 9
-#define PAYMENT_SHOW_TOTAL             10
-#define PAYMENT_INPUT                  11
-#define PAYMENT_ERROR                  12
-#define PAYMENT_INFO_WAIT              13
-#define THANKS                         14
-#define ADMIN_MODE                     15
-#define CHOOSING_SKIN_TO_ADJUST        16
-#define TIMEOUT_ADMIN_MODE             17
-#define ADJUST_QUANTITY_AND_PRICE      18
-#define CONFIRM_EXIT_ADMIN_MODE        19
-\end{lstlisting}
+Hệ thống hiện thực 19 trạng thái riêng biệt, được định nghĩa trong \texttt{fsm\_vm.h}, bao gồm các trạng thái khởi tạo, giao dịch khách hàng và chế độ quản trị.
 
 \subsubsection{Phân loại Trạng thái}
 
@@ -809,44 +579,7 @@ CHOOSING_SKIN (Phím R + mật khẩu) -> ADMIN_MODE
 
 \subsubsection{Hiện thực FSM}
 
-FSM được hiện thực sử dụng cấu trúc switch-case trong \texttt{fsm\_vm.c}:
-
-\begin{lstlisting}[language=C, caption={Cấu trúc Cốt lõi FSM}]
-void fsm_vm_run(void) {
-    switch (status) {
-        case INIT:
-            if (init_timer_flag == 1) {
-                status = WAIT_SENSOR;
-                ledOFF();
-                lcd_clear();
-                detection_start_time = 0;
-                sensor_tick_last = HAL_GetTick();
-            }
-            break;
-            
-        case WAIT_SENSOR:
-            Sensor_Trigger();
-            HAL_Delay(50);
-            
-            if (Distance > 0 && Distance <= 20) {
-                if (detection_start_time == 0) {
-                    detection_start_time = HAL_GetTick();
-                } else if (HAL_GetTick() - detection_start_time >= 3000) {
-                    status = WELCOME_SECTION;
-                    ledON();
-                    // Display welcome screen
-                }
-            } else {
-                detection_start_time = 0;
-            }
-            break;
-            
-        // ... additional 17 states ...
-    }
-}
-\end{lstlisting}
-
-Mỗi trạng thái hiện thực:
+FSM được hiện thực sử dụng cấu trúc switch-case trong \texttt{fsm\_vm.c}. Mỗi trạng thái hiện thực:
 \begin{enumerate}[leftmargin=*]
     \item Hành động đầu vào (cập nhật hiển thị, khởi tạo biến)
     \item Xử lý đầu vào (quét bàn phím)
@@ -997,36 +730,7 @@ uint32_t detection_start_time = 0;    // Sensor detection timestamp
 
 \subsubsection{Thuật toán Phát hiện Khách hàng}
 
-Giám sát liên tục với lọc nhiễu:
-
-\begin{lstlisting}[language=C, caption={Logic Phát hiện Khách hàng}]
-// Trigger sensor measurement
-Sensor_Trigger();
-HAL_Delay(50);
-
-if (Distance > 0 && Distance <= 20) {
-    // Object detected in range
-    if (detection_start_time == 0) {
-        // First detection: Record timestamp
-        detection_start_time = HAL_GetTick();
-    } else {
-        // Continuous detection: Check duration
-        if (HAL_GetTick() - detection_start_time >= 3000) {
-            // 3 seconds continuous detection confirmed
-            status = WELCOME_SECTION;
-            ledON();
-            // Display welcome message
-            detection_start_time = 0;
-        }
-    }
-} else {
-    // No object or out of range: Reset
-    detection_start_time = 0;
-    ledOFF();
-}
-\end{lstlisting}
-
-Yêu cầu 3 giây lọc nhiễu thoáng qua và đảm bảo sự hiện diện có chủ ý của khách hàng.
+Hệ thống giám sát liên tục cảm biến siêu âm. Nếu phát hiện vật thể trong phạm vi 20cm trong 3 giây liên tiếp, hệ thống sẽ chuyển sang trạng thái chào mừng. Cơ chế này giúp lọc nhiễu và đảm bảo sự hiện diện có chủ ý của khách hàng.
 
 \subsubsection{Thuật toán Xác thực Thanh toán}
 
@@ -1386,53 +1090,7 @@ char Keypad_Scan(void) {
 
 \subsubsection{Trình điều khiển Cảm biến Siêu âm}
 
-Trình điều khiển cảm biến sử dụng bộ định thời bắt tín hiệu đầu vào để đo chính xác:
-
-\begin{lstlisting}[language=C, caption={Hiện thực Cảm biến Siêu âm}]
-void Sensor_Trigger(void) {
-    // Send 10us trigger pulse
-    HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_SET);
-    delay_us(10);
-    HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_RESET);
-    
-    // Enable capture interrupt
-    __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
-}
-
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
-    if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) {
-        if (Is_First_Captured == 0) {
-            // Rising edge: Start timing
-            IC_Val1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-            Is_First_Captured = 1;
-            
-            // Switch to falling edge detection
-            __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, 
-                                          TIM_INPUTCHANNELPOLARITY_FALLING);
-        } else {
-            // Falling edge: Calculate distance
-            IC_Val2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-            __HAL_TIM_SET_COUNTER(htim, 0);
-            
-            // Handle timer overflow
-            if (IC_Val2 > IC_Val1) {
-                Difference = IC_Val2 - IC_Val1;
-            } else {
-                Difference = (0xFFFF - IC_Val1) + IC_Val2;
-            }
-            
-            // Calculate distance: time * 0.034 / 2 (cm)
-            Distance = Difference * 0.034 / 2;
-            Is_First_Captured = 0;
-            
-            // Switch back to rising edge
-            __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, 
-                                          TIM_INPUTCHANNELPOLARITY_RISING);
-            __HAL_TIM_DISABLE_IT(&htim1, TIM_IT_CC1);
-        }
-    }
-}
-\end{lstlisting}
+Trình điều khiển cảm biến sử dụng bộ định thời bắt tín hiệu đầu vào để đo thời gian phản hồi của xung siêu âm, từ đó tính toán khoảng cách chính xác.
 
 \subsection{Chi tiết Hiện thực Máy trạng thái}
 
@@ -1486,428 +1144,30 @@ break;
 
 .
 
-\begin{lstlisting}[language=C, caption={Trạng thái Xử lý Thanh toán}]
-case PAYMENT_INPUT:
-{
-    if (timeout_timer_flag == 1) {
-        status = CHOOSING_QUANTITY;
-        // Reset to quantity selection
-        break;
-    }
-    
-    char key = Keypad_Scan();
-    if (key != 0) {
-        setTimeoutTimer(30000);
-        
-        if (key >= '0' && key <= '9') {
-            // Build payment amount digit by digit
-            if (money_inserted_current < 1000000000) {
-                money_inserted_current = 
-                    money_inserted_current * 10 + (key - '0');
-                display_payment_input();
-            }
-        }
-        else if (key == '#') {
-            // Confirm payment
-            if (!is_valid_money(money_inserted_current)) {
-                payment_error_count++;
-                if (payment_error_count >= 5) {
-                    status = INIT;  // Too many errors
-                } else {
-                    status = PAYMENT_ERROR;
-                }
-            } else {
-                money_paid_accumulated += money_inserted_current;
-                
-                if (money_paid_accumulated < total_payable) {
-                    // Need more payment
-                    status = PAYMENT_INFO_WAIT;
-                    uint32_t remaining = 
-                        total_payable - money_paid_accumulated;
-                    // Display remaining amount
-                } else {
-                    // Payment complete
-                    status = PAYMENT_INFO_WAIT;
-                    uint32_t change = 
-                        money_paid_accumulated - total_payable;
-                    // Display change
-                }
-            }
-        }
-        else if (key == '*') {
-            // Backspace or cancel
-            if (money_inserted_current == 0) {
-                status = CHOOSING_QUANTITY;
-            } else {
-                money_inserted_current /= 10;
-                display_payment_input();
-            }
-        }
-    }
-}
-break;
-\end{lstlisting}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Trạng thái Chọn Sản phẩm:} Xử lý phím Lên/Xuống để duyệt danh sách, phím \# để xem chi tiết và phím R để vào chế độ quản trị.
+    \item \textbf{Trạng thái Thanh toán:} Cộng dồn các mệnh giá tiền được nhập, kiểm tra tính hợp lệ và tính toán tiền thừa.
+    \item \textbf{Trạng thái Quản trị:} Cho phép điều chỉnh số lượng và giá cả của từng sản phẩm thông qua giao diện trực quan.
+\end{itemize}
 
-\subsubsection{Admin Mode Implementation}
+\subsection{Quản lý Hiển thị và Xử lý Lỗi}
 
-\paragraph{ADJUST\_QUANTITY\_AND\_PRICE State:}
+Hệ thống sử dụng các hàm định dạng văn bản để căn giữa nội dung trên màn hình LCD 16x2. Cơ chế xử lý lỗi bao gồm xác thực đầu vào (số lượng, mệnh giá tiền) và giới hạn số lần nhập sai liên tiếp để ngăn chặn hành vi spam hoặc lỗi hệ thống.
 
-.
+\subsection{Tối ưu hóa Hiệu năng}
 
-\begin{lstlisting}[language=C, caption={Inventory Adjustment State}]
-case ADJUST_QUANTITY_AND_PRICE:
-{
-    Skin* skin = getSkinByID(current_id);
-    if (skin == NULL) break;
-    
-    char key = Keypad_Scan();
-    if (key != 0) {
-        setTimeoutTimer(60000);  // 60s admin timeout
-        
-        if (adj_line == 0) {  // Adjusting quantity
-            if (key == 'L') {
-                if (skin->quantity > 0) {
-                    updateQuantity(current_id, skin->quantity - 1);
-                    display_adjust_quantity_and_price(current_id, adj_line);
-                }
-            }
-            else if (key == 'R') {
-                if (skin->quantity < 9) {
-                    updateQuantity(current_id, skin->quantity + 1);
-                    display_adjust_quantity_and_price(current_id, adj_line);
-                }
-            }
-            else if (key == 'D') {
-                adj_line = 1;  // Switch to price adjustment
-                display_adjust_quantity_and_price(current_id, adj_line);
-            }
-        }
-        else if (adj_line == 1) {  // Adjusting price
-            if (key == 'L') {
-                if (skin->price >= 1000) {
-                    updatePrice(current_id, skin->price - 1000);
-                    display_adjust_quantity_and_price(current_id, adj_line);
-                }
-            }
-            else if (key == 'R') {
-                if (skin->price < 99000) {
-                    updatePrice(current_id, skin->price + 1000);
-                    display_adjust_quantity_and_price(current_id, adj_line);
-                }
-            }
-            else if (key == '#') {
-                // Save and exit
-                lcd_clear();
-                lcd_center_text(0, "COMPLETE UPDATE");
-                HAL_Delay(1500);
-                status = CHOOSING_SKIN_TO_ADJUST;
-            }
-            else if (key == 'U') {
-                adj_line = 0;  // Switch back to quantity
-                display_adjust_quantity_and_price(current_id, adj_line);
-            }
-        }
-    }
-}
-break;
-\end{lstlisting}
-
-\subsection{Display Management}
-
-\subsubsection{Text Formatting Functions}
-
-\begin{lstlisting}[language=C, caption={Display Helper Functions}]
-void lcd_center_text(int row, char *str) {
-    int len = strlen(str);
-    int padding = 0;
-    if (len < 16) {
-        padding = (16 - len) / 2;
-    }
-    lcd_gotoxy(padding, row);
-    lcd_write_string(str);
-}
-
-void display_current_skin(uint8_t id) {
-    Skin* skin = getSkinByID(id);
-    if (skin == NULL) return;
-    
-    char buffer[22];
-    
-    // Line 1: ID and skin name
-    lcd_gotoxy(0, 0);
-    snprintf(buffer, sizeof(buffer), "%d. %-12s", 
-             skin->id, skin->skinName);
-    lcd_write_string(buffer);
-    
-    // Line 2: Player name
-    lcd_gotoxy(0, 1);
-    snprintf(buffer, sizeof(buffer), "%-16s", 
-             skin->playerName);
-    lcd_write_string(buffer);
-}
-
-void display_skin_detail(uint8_t id) {
-    Skin* skin = getSkinByID(id);
-    if (skin == NULL) return;
-    
-    char buffer[17];
-    
-    // Line 1: Available quantity
-    lcd_gotoxy(0, 0);
-    snprintf(buffer, sizeof(buffer), "Available: %-5lu", 
-             (unsigned long)skin->quantity);
-    lcd_write_string(buffer);
-    
-    // Line 2: Price and ID
-    lcd_gotoxy(0, 1);
-    snprintf(buffer, sizeof(buffer), "Price: %lu #%-3d", 
-             (unsigned long)skin->price, skin->id);
-    lcd_write_string(buffer);
-}
-\end{lstlisting}
-
-\subsection{Error Handling Mechanisms}
-
-\subsubsection{Input Validation}
-
-\begin{lstlisting}[language=C, caption={Input Validation Functions}]
-// Quantity validation
-int validate_quantity(uint32_t quantity, uint32_t available) {
-    if (quantity <= 0 || quantity > 9) {
-        return ERROR_INVALID_RANGE;
-    }
-    if (quantity > available) {
-        return ERROR_INSUFFICIENT_STOCK;
-    }
-    return VALIDATION_OK;
-}
-
-// Payment validation
-int is_valid_money(uint32_t amount) {
-    uint32_t valid_denominations[] = {
-        5000, 10000, 20000, 50000, 
-        100000, 200000, 500000
-    };
-    
-    for (int i = 0; i < 7; i++) {
-        if (amount == valid_denominations[i]) {
-            return 1;
-        }
-    }
-    return 0;
-}
-\end{lstlisting}
-
-\subsubsection{Error Counter Management}
-
-\begin{lstlisting}[language=C, caption={Error Limit Enforcement}]
-// In CHOOSING_QUANTITY state
-if (validation_error) {
-    error_count++;
-    
-    if (error_count >= 5) {
-        status = MAX_ERROR_STATE;
-        lcd_clear();
-        lcd_write_string("5 TIMES WRONG!");
-        lcd_gotoxy(0, 1);
-        lcd_write_string("DONT WANNA BUY?");
-        setMessageTimer(3000);
-    } else {
-        status = QUANTITY_ERROR;
-        // Display specific error message
-        setMessageTimer(3000);
-    }
-}
-
-// Reset counter on successful input
-if (validation_success) {
-    error_count = 0;
-}
-\end{lstlisting}
-
-\subsection{Performance Optimizations}
-
-\subsubsection{Reduced Display Updates}
-
-Only update LCD when content changes:
-
-\begin{lstlisting}[language=C, caption={Conditional Display Updates}]
-static uint8_t last_displayed_id = 0;
-
-void display_current_skin(uint8_t id) {
-    if (id == last_displayed_id) {
-        return;  // No change, skip update
-    }
-    
-    last_displayed_id = id;
-    // Perform actual display update
-}
-\end{lstlisting}
-
-\subsubsection{Timer Optimization}
-
-Use single 1ms SysTick interrupt for all timers:
-
-\begin{lstlisting}[language=C, caption={Efficient Timer Management}]
-void SysTick_Handler(void) {
-    HAL_IncTick();
-    timerRun();  // Update all software timers
-}
-\end{lstlisting}
-
-\subsubsection{Flash Write Minimization}
-
-Only write Flash when data actually changes:
-
-\begin{lstlisting}[language=C, caption={Smart Flash Updates}]
-int updateQuantity(uint8_t ID, uint32_t NEW_QUANTITY) {
-    Skin* skin = getSkinByID(ID);
-    if (skin == NULL || NEW_QUANTITY > 9) return 0;
-    
-    if (skin->quantity == NEW_QUANTITY) {
-        return 1;  // No change, skip Flash write
-    }
-    
-    skin->quantity = NEW_QUANTITY;
-    Store_SaveToFlash();
-    return 1;
-}
-\end{lstlisting}
-
-\subsection{Development and Debugging}
-
-\subsubsection{Debug Output}
-
-For development, UART output can be added:
-
-\begin{lstlisting}[language=C, caption={Debug Logging Example}]
-#ifdef DEBUG_MODE
-    printf("State: %d -> %d\n", old_status, status);
-    printf("Distance: %d cm\n", Distance);
-    printf("Key pressed: %c\n", key);
-#endif
-\end{lstlisting}
-
-\subsubsection{State Monitoring}
-
-LED indicator for state visualization:
-
-\begin{lstlisting}[language=C, caption={State Indication}]
-void update_status_led(void) {
-    if (status == WAIT_SENSOR) {
-        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);  // Off
-    } else {
-        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET); // On
-    }
-}
-\end{lstlisting}
+Để đảm bảo hiệu năng thời gian thực, hệ thống áp dụng các kỹ thuật tối ưu hóa như:
+\begin{itemize}[leftmargin=*]
+    \item Chỉ cập nhật màn hình LCD khi nội dung thay đổi.
+    \item Sử dụng ngắt SysTick 1ms duy nhất cho tất cả các bộ định thời phần mềm.
+    \item Giảm thiểu số lần ghi vào bộ nhớ Flash bằng cách kiểm tra sự thay đổi dữ liệu trước khi ghi.
+\end{itemize}
 
 \newpage
 \section{Trình diễn}
 
 Phần này trình bày các quy trình kiểm thử, kết quả vận hành và phân tích hiệu năng của hệ thống máy bán hàng tự động.\newline
 Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1COVcYWAQKlN}
-
-\subsection{Phương pháp Kiểm thử}
-
-\subsubsection{Kiểm thử Đơn vị}
-
-Các mô-đun riêng lẻ đã được kiểm thử độc lập:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Trình điều khiển LCD:} Xác minh hiển thị ký tự, định vị con trỏ, điều khiển đèn nền và độ tin cậy giao tiếp I2C
-    \item \textbf{Quét Bàn phím:} Kiểm tra phát hiện phím, hiệu quả chống rung và độ chính xác ánh xạ ký tự
-    \item \textbf{Cảm biến Siêu âm:} Xác thực đo khoảng cách ở các phạm vi khác nhau (5cm đến 100cm) với kiểm tra độ chính xác
-    \item \textbf{Hoạt động Flash:} Xác nhận tính bền vững của dữ liệu qua các chu kỳ nguồn, thời gian xóa/ghi và xác thực số ma thuật
-    \item \textbf{Hệ thống Bộ định thời:} Xác minh độ chính xác thời gian chờ, tính đúng đắn của việc thiết lập cờ và hoạt động bộ định thời đồng thời
-\end{itemize}
-
-\subsubsection{Kiểm thử Tích hợp}
-
-Kiểm thử chức năng hệ thống hoàn chỉnh:
-
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{Luồng Mua hàng Bình thường:} Phát hiện khách hàng $\rightarrow$ chọn sản phẩm $\rightarrow$ nhập số lượng $\rightarrow$ thanh toán $\rightarrow$ cập nhật kho hàng
-    \item \textbf{Xử lý Lỗi:} Đầu vào không hợp lệ, kịch bản hết hàng, lỗi thanh toán, điều kiện thời gian chờ
-    \item \textbf{Hoạt động Quản trị:} Xác thực mật khẩu, điều chỉnh kho hàng, sửa đổi giá, tự động đăng xuất
-    \item \textbf{Chuyển đổi Trạng thái:} Tất cả 19 trạng thái được kiểm thử về hành vi vào/ra và chuyển đổi chính xác
-    \item \textbf{Tính Bền vững:} Kiểm thử chu kỳ nguồn xác nhận việc lưu giữ dữ liệu kho hàng
-\end{enumerate}
-
-\subsubsection{Kiểm thử Sức chịu đựng}
-
-Đánh giá độ bền vững của hệ thống:
-
-\begin{itemize}[leftmargin=*]
-    \item Chuỗi nhấn phím nhanh để kiểm tra chống rung
-    \item Hoạt động liên tục trong thời gian dài (8+ giờ)
-    \item Kiểm thử nhiễu cảm biến với các điều kiện môi trường thay đổi
-    \item Nhiều kịch bản lỗi liên tiếp
-    \item Kiểm thử độ bền Flash (1000+ chu kỳ ghi)
-\end{itemize}
-
-\subsection{Kết quả Vận hành}
-
-\subsubsection{Hiệu suất Phát hiện Khách hàng}
-
-Kết quả kiểm thử cảm biến siêu âm:
-
-\begin{table}[H]
-\centering
-\caption{Độ chính xác Đo Khoảng cách}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Khoảng cách Thực (cm)} & \textbf{Đo được (cm)} & \textbf{Sai số (cm)} & \textbf{Độ chính xác} \\
-\hline
-5 & 5.2 & +0.2 & 96\% \\
-10 & 10.1 & +0.1 & 99\% \\
-20 & 20.3 & +0.3 & 98.5\% \\
-30 & 30.5 & +0.5 & 98.3\% \\
-50 & 51.2 & +1.2 & 97.6\% \\
-\hline
-\end{tabular}
-\end{table}
-
-Tỷ lệ phát hiện khách hàng thành công: 98.7\% (296 lần phát hiện thành công trên 300 lần thử)
-
-Tỷ lệ dương tính giả: 1.2\% (phát hiện do nhiễu được lọc bởi yêu cầu 3 giây)
-
-\subsubsection{Đo lường Thời gian Phản hồi}
-
-Kiểm thử độ phản hồi của hệ thống:
-
-\begin{table}[H]
-\centering
-\caption{Thời gian Phản hồi Hệ thống}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Hoạt động} & \textbf{Thời gian Phản hồi} \\
-\hline
-Nhấn phím đến cập nhật LCD & 45-65 ms \\
-Điều hướng sản phẩm (Lên/Xuống) & 50-80 ms \\
-Chuyển đổi trạng thái & 10-30 ms \\
-Ghi Flash (toàn bộ kho hàng) & 85-110 ms \\
-Kích hoạt cảm biến đến đọc khoảng cách & 20-25 ms \\
-Xóa và ghi toàn màn hình LCD & 40-60 ms \\
-Xác minh mật khẩu quản trị & 6-8 giây (phụ thuộc người dùng) \\
-\hline
-\end{tabular}
-\end{table}
-
-Tất cả thời gian phản hồi đều đáp ứng yêu cầu NFR1 về phản hồi dưới 100ms cho các tương tác người dùng.
-
-\subsubsection{Tỷ lệ Giao dịch Thành công}
-
-Kiểm thử giao dịch hoàn chỉnh (100 lần mua hàng mô phỏng):
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Giao dịch Thành công:} 97 (97\%)
-    \item \textbf{Hủy do Người dùng:} 2 (2\%)
-    \item \textbf{Hủy do Thời gian chờ:} 1 (1\%)
-    \item \textbf{Lỗi Hệ thống:} 0 (0\%)
-\end{itemize}
-
-Hiệu quả phục hồi lỗi: 100\% (tất cả các trạng thái lỗi đều trở về trạng thái an toàn chính xác)
 
 \subsection{Các Kịch bản Vận hành Ví dụ}
 
@@ -1995,122 +1255,7 @@ Hiệu quả phục hồi lỗi: 100\% (tất cả các trạng thái lỗi đ�
     \item Hệ thống trở lại chế độ khách hàng bình thường
 \end{enumerate}
 
-\subsection{Phân tích Hiệu năng}
-
-\subsubsection{Sử dụng Bộ nhớ}
-
-Sử dụng bộ nhớ chương trình (đo lường với đầu ra bản dựng):
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Tổng Flash Sử dụng:} Khoảng 42KB / 64KB (65.6\%)
-    \item \textbf{Phần Mã:} 38KB (ứng dụng + trình điều khiển HAL)
-    \item \textbf{Hằng số:} 2KB (chuỗi, bảng tra cứu)
-    \item \textbf{Lưu trữ Dữ liệu:} 1KB (Trang Flash 63 cho kho hàng)
-    \item \textbf{Flash Khả dụng:} 22KB cho mở rộng trong tương lai
-\end{itemize}
-
-Sử dụng RAM:
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Biến Toàn cục:} ~800 byte (mảng kho hàng + biến trạng thái)
-    \item \textbf{Stack:} ~2KB được phân bổ
-    \item \textbf{Heap:} Không sử dụng (không phân bổ động)
-    \item \textbf{Cấu trúc HAL:} ~1KB
-    \item \textbf{Tổng RAM Sử dụng:} ~4KB / 20KB (20\%)
-\end{itemize}
-
-\subsubsection{Tiêu thụ Năng lượng}
-
-Tiêu thụ năng lượng đo được ở các chế độ khác nhau:
-
-\begin{table}[H]
-\centering
-\caption{Phân tích Tiêu thụ Năng lượng}
-\begin{tabular}{|l|c|c|}
-\hline
-\textbf{Chế độ Vận hành} & \textbf{Dòng điện (mA)} & \textbf{Công suất (mW)} \\
-\hline
-Nhàn rỗi (WAIT\_SENSOR, tắt đèn nền) & 55 & 275 \\
-Giao dịch hoạt động (bật đèn nền) & 185 & 925 \\
-Hoạt động cập nhật LCD & 200 & 1000 \\
-Hoạt động ghi Flash & 95 & 475 \\
-\hline
-\end{tabular}
-\end{table}
-
-Công suất tiêu thụ trung bình trong giao dịch điển hình: ~800mW
-
-\subsubsection{Độ bền Flash}
-
-Kiểm thử vòng đời bộ nhớ Flash:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Chu kỳ Ghi đã Kiểm thử:} 1,500 lần lưu kho hàng hoàn chỉnh
-    \item \textbf{Toàn vẹn Dữ liệu:} 100\% (tất cả các lần đọc sau khi ghi đều được xác minh chính xác)
-    \item \textbf{Lỗi Ghi:} 0
-    \item \textbf{Xác thực Số Ma thuật:} Tỷ lệ thành công 100\%
-\end{itemize}
-
-Thông số kỹ thuật Flash STM32F103: Tối thiểu 10,000 chu kỳ ghi mỗi trang. Với các mẫu sử dụng hiện tại (1-2 lần ghi mỗi giao dịch), hệ thống có thể xử lý 100,000+ giao dịch trước khi đạt giới hạn Flash.
-
-\subsection{Các Vấn đề Gặp phải và Giải pháp}
-
-\subsubsection{Sự không ổn định Giao tiếp LCD}
-
-\textbf{Vấn đề:} Thỉnh thoảng ký tự bị hỏng trên màn hình LCD trong quá trình cập nhật nhanh.
-
-\textbf{Nguyên nhân Gốc rễ:} Độ trễ không đủ giữa các hoạt động I2C gây ra vi phạm thời gian.
-
-\textbf{Giải pháp:} Tăng độ trễ NOP trong hàm LCD\_Enable() từ 20 lên 50 chu kỳ, thêm độ trễ trong các quy trình bit-banging I2C. Độ ổn định được cải thiện lên 99.9\%.
-
-\subsubsection{Bóng ma Bàn phím}
-
-\textbf{Vấn đề:} Phát hiện phím sai khi nhiều phím được nhấn đồng thời.
-
-\textbf{Nguyên nhân Gốc rễ:} Nhiễu xuyên âm điện bàn phím ma trận không có bảo vệ diode.
-
-\textbf{Giải pháp:} Hiện thực trình tự quét chặt chẽ hơn với sự cô lập hàng rõ ràng. Thêm xác thực để từ chối các tổ hợp phím không thể xảy ra về mặt vật lý. Bóng ma được loại bỏ trong hoạt động đơn phím bình thường.
-
-\subsubsection{Nhiễu Cảm biến ở Phạm vi Gần}
-
-\textbf{Vấn đề:} Đọc khoảng cách không ổn định khi vật thể rất gần ($<$5cm).
-
-\textbf{Nguyên nhân Gốc rễ:} Giới hạn phạm vi tối thiểu của HC-SR04 và nhiễu âm thanh.
-
-\textbf{Giải pháp:} Đặt ngưỡng phát hiện ở mức 20cm (nằm trong phạm vi ổn định) và hiện thực yêu cầu phát hiện liên tục 3 giây. Tỷ lệ kích hoạt sai giảm từ 8\% xuống 1.2\%.
-
-\subsubsection{Xử lý Tràn Bộ định thời}
-
-\textbf{Vấn đề:} Tính toán khoảng cách không chính xác khi bộ đếm thời gian tràn trong quá trình đo dài.
-
-\textbf{Nguyên nhân Gốc rễ:} Bộ định thời 16-bit quay vòng ở 65,535 đếm.
-
-\textbf{Giải pháp:} Thêm phát hiện tràn và bù đắp trong callback bắt tín hiệu:
-
-\begin{lstlisting}[language=C]
-if (IC_Val2 > IC_Val1) {
-    Difference = IC_Val2 - IC_Val1;
-} else {
-    Difference = (0xFFFF - IC_Val1) + IC_Val2;
-}
-\end{lstlisting}
-
 \subsection{Độ tin cậy Hệ thống}
-
-\subsubsection{Kiểm thử Vận hành Liên tục}
-
-Hệ thống vận hành liên tục trong 12 giờ với các giao dịch định kỳ:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Tổng Giao dịch:} 157
-    \item \textbf{Sập Hệ thống:} 0
-    \item \textbf{Khóa Máy trạng thái:} 0
-    \item \textbf{Rò rỉ Bộ nhớ:} Không phát hiện (không sử dụng phân bổ động)
-    \item \textbf{Phục hồi Thời gian chờ:} 8 (tất cả đều thành công)
-\end{itemize}
-
-Hệ thống đã chứng minh hoạt động ổn định mà không cần can thiệp thủ công hoặc khởi động lại.
-
-\subsubsection{Xác thực Phục hồi Lỗi}
 
 Tất cả các đường dẫn lỗi được kiểm thử thành công:
 
@@ -2128,38 +1273,7 @@ Tất cả các đường dẫn lỗi được kiểm thử thành công:
 
 While the current implementation successfully demonstrates embedded vending machine concepts, several enhancements could expand functionality and commercial viability.
 
-\subsection{Cải tiến Phần cứng}
-
-\subsubsection{Cơ chế Nhả Sản phẩm Vật lý}
-
-\textbf{Trạng thái Hiện tại:} Hệ thống mô phỏng mua hàng mà không có nhả sản phẩm vật lý.
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Tích hợp động cơ servo hoặc động cơ bước cho cơ chế phân phối sản phẩm
-    \item Hiện thực định vị sản phẩm dựa trên khe cắm với cơ chế nhả có địa chỉ
-    \item Thêm cảm biến quang học để xác minh nhả sản phẩm thành công
-    \item Bao gồm phát hiện kẹt và xử lý lỗi cho các hỏng hóc cơ khí
-\end{itemize}
-
-\textbf{Yêu cầu Kỹ thuật:} Thêm chân GPIO, mạch điều khiển động cơ (L298N hoặc tương tự), cảm biến phản hồi vị trí, nâng cấp nguồn điện để xử lý dòng điện động cơ.
-
-\subsubsection{Phần cứng Thanh toán Thực}
-
-\textbf{Trạng thái Hiện tại:} Thanh toán được mô phỏng qua nhập số từ bàn phím.
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Bộ chấp nhận Xu:} Bộ xác thực xu đa mệnh giá với giao diện đầu ra xung
-    \item \textbf{Bộ xác thực Tiền giấy:} Mô-đun nhận dạng tiền giấy với giao tiếp nối tiếp (RS-232/TTL)
-    \item \textbf{Bộ trả Xu:} Cơ chế trả tiền thừa có động cơ
-    \item \textbf{Đầu đọc RFID/NFC:} Hỗ trợ thanh toán không tiếp xúc (ví dụ: thẻ Mifare)
-    \item \textbf{Máy quét Mã QR:} Tích hợp thanh toán di động (ví điện tử)
-\end{itemize}
-
-\textbf{Cân nhắc Hiện thực:} Giao diện UART/SPI cho các mô-đun thanh toán, giao thức giao dịch an toàn, quản lý ký quỹ cho xu/tiền giấy trong quá trình giao dịch, tối ưu hóa thuật toán trả tiền thừa.
-
-\subsubsection{Màn hình Lớn hơn}
+\subsection{Màn hình Lớn hơn}
 
 \textbf{Trạng thái Hiện tại:} LCD ký tự 16×2 giới hạn hiển thị thông tin.
 
@@ -2173,7 +1287,7 @@ While the current implementation successfully demonstrates embedded vending mach
 
 \textbf{Lợi ích:} Cải thiện trải nghiệm người dùng, giảm thời gian làm quen, trình bày thương hiệu tốt hơn, tính năng hỗ trợ truy cập.
 
-\subsubsection{Mở rộng Dung lượng Kho hàng}
+\subsection{Mở rộng Dung lượng Kho hàng}
 
 \textbf{Trạng thái Hiện tại:} 16 sản phẩm bị giới hạn bởi điều hướng hiển thị và bộ nhớ.
 
@@ -2187,42 +1301,7 @@ While the current implementation successfully demonstrates embedded vending mach
 
 \textbf{Cách tiếp cận Kỹ thuật:} AT24C256 (32KB EEPROM) hoặc lớn hơn, cấu trúc menu phân cấp, hệ thống phân loại sản phẩm.
 
-\subsection{Cải tiến Phần mềm}
-
-\subsubsection{Kết nối Mạng}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Mô-đun WiFi:} ESP8266 hoặc ESP32 cho kết nối không dây
-    \item \textbf{Giao thức MQTT:} Báo cáo kho hàng và doanh số thời gian thực
-    \item \textbf{Giám sát Từ xa:} Bảng điều khiển web cho phân tích doanh số và mức tồn kho
-    \item \textbf{Cập nhật OTA:} Cập nhật firmware không cần truy cập vật lý
-    \item \textbf{Tích hợp Đám mây:} Quản lý tập trung cho nhiều máy
-\end{itemize}
-
-\textbf{Tính năng được Kích hoạt:}
-\begin{itemize}[leftmargin=*]
-    \item Giám sát kho hàng từ xa và cảnh báo sắp hết hàng
-    \item Phân tích xu hướng bán hàng và báo cáo
-    \item Định giá động dựa trên nhu cầu hoặc thời gian trong ngày
-    \item Khắc phục sự cố và chẩn đoán từ xa
-    \item Tích hợp với hệ thống quản lý kho hàng
-\end{itemize}
-
-\subsubsection{Phân tích Bán hàng Nâng cao}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Ghi nhật ký lịch sử giao dịch với dấu thời gian
-    \item Theo dõi mức độ phổ biến của sản phẩm
-    \item Xác định thời gian sử dụng cao điểm
-    \item Báo cáo doanh thu và dự báo
-    \item Phân tích hành vi khách hàng
-\end{itemize}
-
-\textbf{Hiện thực:} Bộ đệm vòng trong EEPROM ngoài/thẻ SD, cấu trúc dữ liệu cho bản ghi giao dịch, thuật toán phân tích thống kê, chức năng xuất dữ liệu.
-
-\subsubsection{Hỗ trợ Đa ngôn ngữ}
+\subsection{Hỗ trợ Đa ngôn ngữ}
 
 \textbf{Trạng thái Hiện tại:} Giao diện chỉ tiếng Anh.
 
@@ -2234,156 +1313,12 @@ While the current implementation successfully demonstrates embedded vending mach
     \item Hỗ trợ Unicode cho các ký tự không phải ASCII
 \end{itemize}
 
-\subsubsection{Hồ sơ Người dùng và Chương trình Khách hàng Thân thiết}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Nhận dạng người dùng dựa trên thẻ RFID
-    \item Lịch sử mua hàng và sở thích được lưu trữ theo người dùng
-    \item Hệ thống tích lũy điểm thưởng
-    \item Đề xuất sản phẩm cá nhân hóa
-    \item Giảm giá và khuyến mãi cho thành viên
-\end{itemize}
-
-\subsubsection{Chẩn đoán Lỗi Nâng cao}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Ghi nhật ký lỗi toàn diện với dấu thời gian và mã lỗi
-    \item Các quy trình tự chẩn đoán cho kiểm tra sức khỏe ngoại vi
-    \item Cảnh báo bảo trì dự đoán (ví dụ: mức phễu xu thấp)
-    \item Công cụ phân tích lỗi cho kỹ thuật viên dịch vụ
-    \item Báo cáo lỗi tự động đến máy chủ trung tâm
-\end{itemize}
-
-\subsection{Cải thiện Trải nghiệm Người dùng}
-
-\subsubsection{Phản hồi Âm thanh}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Còi hoặc loa nhỏ cho phản hồi âm thanh
-    \item Tiếng bíp xác nhận cho các lần nhấn phím
-    \item Nhắc nhở bằng giọng nói cho các bước giao dịch
-    \item Âm báo cho lỗi hoặc hoàn thành
-\end{itemize}
-
-\subsubsection{Tính năng Hỗ trợ Truy cập}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Chế độ hiển thị độ tương phản cao cho người khiếm thị
-    \item Hướng dẫn âm thanh và đầu ra giọng nói
-    \item Tùy chọn lớp phủ chữ nổi Braille cho các nút vật lý
-    \item Cơ chế điều chỉnh chiều cao hoặc độ nghiêng
-    \item Chế độ nút lớn với giao diện đơn giản hóa
-\end{itemize}
-
-\subsubsection{In Hóa đơn}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Mô-đun máy in nhiệt cho hóa đơn giao dịch
-    \item In tên sản phẩm, số lượng, giá, tổng cộng, tiền thừa
-    \item Bao gồm ID giao dịch cho mục đích hoàn tiền/bảo hành
-    \item Tùy chọn hóa đơn email qua kết nối mạng
-\end{itemize}
-
-\subsection{Cải tiến Bảo mật}
-
-\subsubsection{Bảo mật Quản trị Nâng cao}
-
-\textbf{Trạng thái Hiện tại:} Mật khẩu 6 chữ số cố định với thời gian chờ 10 giây.
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Mật khẩu có thể cấu hình với mã hóa
-    \item Truy cập đa cấp (quản lý, kỹ thuật viên, vận hành viên)
-    \item Chức năng đổi mật khẩu
-    \item Ghi nhật ký nỗ lực đăng nhập
-    \item Khóa tài khoản sau nhiều lần thử thất bại
-    \item Xác thực thẻ RFID/NFC cho nhân viên dịch vụ
-\end{itemize}
-
-\subsubsection{Bảo vệ Chống Giả mạo}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Công tắc phát hiện giả mạo trên các bảng truy cập
-    \item Giám sát điện áp cho các cuộc tấn công nguồn điện
-    \item Gia tốc kế cho phát hiện nghiêng/rung
-    \item Thông báo báo động khi có nỗ lực giả mạo
-    \item Xác minh khởi động an toàn
-\end{itemize}
-
-\subsection{Quản lý Năng lượng}
-
-\subsubsection{Hiệu quả Năng lượng}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Các chế độ năng lượng thấp của STM32 trong thời gian nhàn rỗi
-    \item Tự động làm mờ đèn nền LCD sau thời gian chờ
-    \item Chế độ ngủ với khả năng đánh thức bằng cảm biến
-    \item Tùy chọn pin năng lượng mặt trời cho lắp đặt ngoài trời
-    \item Pin dự phòng cho khả năng phục hồi khi mất điện
-\end{itemize}
-
-\subsubsection{Giám sát Môi trường}
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Cảm biến nhiệt độ cho các ứng dụng làm lạnh
-    \item Giám sát độ ẩm cho các sản phẩm nhạy cảm
-    \item Cảnh báo tự động cho các điều kiện ngoài phạm vi
-    \item Điều khiển máy nén cho hệ thống làm mát
-\end{itemize}
-
-\subsection{Các Lĩnh vực Sản phẩm Thay thế}
-
-Mặc dù dự án này tập trung vào skin game, kiến trúc hệ thống có thể thích ứng với:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Bán hàng Truyền thống:} Đồ ăn nhẹ, đồ uống, vật dụng cá nhân
-    \item \textbf{Bán vé:} Vé sự kiện, thẻ đỗ xe, thẻ giao thông
-    \item \textbf{Nội dung Số:} Mã tải xuống, thẻ trả trước, giấy phép
-    \item \textbf{Dịch vụ Cho thuê:} Sạc dự phòng, ô dù, công cụ
-    \item \textbf{Tủ khóa Thông minh:} Hệ thống nhận/giao gói hàng
-\end{itemize}
-
-\subsection{Cân nhắc về Khả năng Mở rộng}
-
-\subsubsection{Nâng cấp Vi điều khiển}
-
-Cho các tính năng nâng cao, xem xét chuyển sang:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Dòng STM32F4:} 168MHz, nhiều bộ nhớ hơn, đơn vị dấu phẩy động phần cứng
-    \item \textbf{Dòng STM32H7:} 480MHz, thiết bị ngoại vi tiên tiến, tùy chọn lõi kép
-    \item \textbf{ESP32:} Tích hợp WiFi/Bluetooth, lõi kép, chi phí hiệu quả
-    \item \textbf{Raspberry Pi:} Hệ điều hành Linux đầy đủ, hệ sinh thái phần mềm phong phú, khả năng hiển thị
-\end{itemize}
-
-\subsubsection{Kiến trúc Mô-đun}
-
-Thiết kế hệ thống như các mô-đun hợp tác:
-
-\begin{itemize}[leftmargin=*]
-    \item Bộ điều khiển chính (STM32) cho điều khiển thời gian thực
-    \item Mô-đun giao tiếp (ESP32) cho kết nối mạng
-    \item Bộ xử lý thanh toán (mô-đun bảo mật chuyên dụng)
-    \item Bộ điều khiển hiển thị (MCU riêng cho đồ họa)
-    \item Giao tiếp giữa các mô-đun qua bus CAN hoặc SPI
-\end{itemize}
-
 \newpage
 \section{Kết luận}
 
 \subsection{Thành tựu Dự án}
 
 Dự án này đã thiết kế và hiện thực thành công một hệ thống máy bán hàng tự động toàn diện sử dụng vi điều khiển STM32F103C8T6. Hệ thống hoàn chỉnh thể hiện ứng dụng thực tế của các khái niệm hệ thống nhúng và đạt được tất cả các mục tiêu chính:
-
-\subsubsection{Thành tựu Kỹ thuật}
 
 \begin{itemize}[leftmargin=*]
     \item \textbf{Tích hợp Phần cứng Hoàn chỉnh:} Giao tiếp thành công vi điều khiển với màn hình LCD, bàn phím ma trận, cảm biến siêu âm và bộ nhớ Flash, tạo ra một hệ thống nhúng đầy đủ chức năng.
@@ -2401,92 +1336,6 @@ Dự án này đã thiết kế và hiện thực thành công một hệ thốn
     \item \textbf{Quản trị An toàn:} Cung cấp chế độ quản trị được bảo vệ bằng mật khẩu với bảo mật dựa trên thời gian chờ cho quản lý kho hàng.
 \end{itemize}
 
-\subsubsection{Chỉ số Hiệu suất}
-
-Hệ thống thể hiện các đặc điểm hiệu suất xuất sắc:
-
-\begin{itemize}[leftmargin=*]
-    \item Thời gian phản hồi: Dưới 100ms cho tất cả các tương tác người dùng
-    \item Độ chính xác đo khoảng cách: 97-99\% trong phạm vi hoạt động
-    \item Tỷ lệ thành công giao dịch: 97\% (loại trừ lỗi người dùng)
-    \item Độ tin cậy hệ thống: Không gặp sự cố trong quá trình hoạt động liên tục 12 giờ
-    \item Phục hồi lỗi: Tỷ lệ thành công 100\% trong việc trở về trạng thái an toàn
-    \item Độ bền Flash: Đã kiểm tra 1,500+ chu kỳ ghi mà không bị hỏng dữ liệu
-\end{itemize}
-
-\subsubsection{Chất lượng Phần mềm}
-
-Việc hiện thực thể hiện các thực hành kỹ thuật phần mềm chuyên nghiệp:
-
-\begin{itemize}[leftmargin=*]
-    \item Kiến trúc mô-đun với sự phân tách rõ ràng các mối quan tâm
-    \item Quy ước đặt tên và tổ chức mã nhất quán
-    \item Quản lý trạng thái toàn diện ngăn chặn hành vi không xác định
-    \item Dấu chân bộ nhớ tối thiểu (65\% Flash, 20\% RAM sử dụng)
-    \item Không cấp phát bộ nhớ động đảm bảo hành vi có thể dự đoán
-    \item Cấu trúc mã được tài liệu hóa tốt tạo thuận lợi cho bảo trì
-\end{itemize}
-
-\subsection{Giá trị Giáo dục}
-
-Dự án này đã cung cấp những trải nghiệm học tập đáng kể trên nhiều lĩnh vực:
-
-\subsubsection{Khái niệm Hệ thống Nhúng}
-
-\begin{itemize}[leftmargin=*]
-    \item Kiến trúc vi điều khiển và cấu hình ngoại vi
-    \item Lập trình thời gian thực và các ràng buộc thời gian
-    \item Lập trình hướng ngắt và quản lý bộ định thời
-    \item Thách thức tích hợp phần cứng-phần mềm
-    \item Thiết kế hệ thống hạn chế tài nguyên
-\end{itemize}
-
-\subsubsection{Giao tiếp Phần cứng}
-
-\begin{itemize}[leftmargin=*]
-    \item Cấu hình và điều khiển I/O số
-    \item Hiện thực và gỡ lỗi giao thức I2C
-    \item Bắt đầu vào bộ định thời cho các phép đo chính xác
-    \item Lập trình bộ nhớ Flash và lưu trữ dữ liệu bền vững
-    \item Giao tiếp cảm biến và xử lý tín hiệu
-\end{itemize}
-
-\subsubsection{Thiết kế Phần mềm}
-
-\begin{itemize}[leftmargin=*]
-    \item Thiết kế và hiện thực máy trạng thái hữu hạn
-    \item Các mô hình lập trình hướng sự kiện
-    \item Chiến lược xử lý lỗi và phục hồi
-    \item Phát triển thuật toán cho các ứng dụng cụ thể
-    \item Tối ưu hóa mã cho môi trường nhúng
-\end{itemize}
-
-\subsubsection{Tích hợp Hệ thống}
-
-\begin{itemize}[leftmargin=*]
-    \item Lựa chọn thành phần và phân tích tương thích
-    \item Phân tích thời gian và phối hợp
-    \item Gỡ lỗi các tương tác phần cứng-phần mềm phức tạp
-    \item Phát triển phương pháp kiểm thử
-    \item Tài liệu hóa và viết kỹ thuật
-\end{itemize}
-
-\subsection{Thách thức Đã Vượt qua}
-
-Một số thách thức kỹ thuật đáng kể đã được giải quyết trong quá trình phát triển:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Ổn định Giao tiếp LCD:} Giải quyết các vấn đề thời gian trong hiện thực I2C bit-banged thông qua hiệu chỉnh độ trễ cẩn thận
-    
-    \item \textbf{Chống rung Bàn phím:} Loại bỏ các kích hoạt sai và hiện tượng bóng ma thông qua các thuật toán quét cải tiến
-    
-    \item \textbf{Lọc Nhiễu Cảm biến:} Đạt được phát hiện khách hàng đáng tin cậy bất chấp nhiễu môi trường thông qua yêu cầu phát hiện liên tục
-    
-    \item \textbf{Tối ưu hóa Ghi Flash:} Giảm thiểu chu kỳ ghi để kéo dài tuổi thọ bộ nhớ trong khi duy trì tính nhất quán dữ liệu
-    
-    \item \textbf{Phức tạp Máy trạng thái:} Quản lý 19 trạng thái với nhiều đường chuyển đổi thông qua thiết kế và kiểm thử có hệ thống
-\end{itemize}
-
 \subsection{Ứng dụng Thực tế}
 
 Mặc dù được phát triển như một dự án giáo dục, hệ thống thể hiện các khái niệm áp dụng cho máy bán hàng tự động thương mại và tự động hóa bán lẻ:
@@ -2501,59 +1350,6 @@ Mặc dù được phát triển như một dự án giáo dục, hệ thống t
 
 Kiến trúc có thể được thích ứng cho các kịch bản bán lẻ tự động khác nhau bao gồm máy bán hàng truyền thống, ki-ốt bán vé, hệ thống cho thuê và tủ khóa thông minh.
 
-\subsection{Hạn chế Được Thừa nhận}
-
-Việc hiện thực hiện tại có một số hạn chế đại diện cho các cơ hội phát triển trong tương lai:
-
-\begin{itemize}[leftmargin=*]
-    \item Mô phỏng thanh toán không có phần cứng xử lý tiền tệ thực
-    \item Dung lượng kho hàng hạn chế (16 sản phẩm)
-    \item Hiển thị chỉ văn bản hạn chế sự tinh vi của giao diện người dùng
-    \item Không có cơ chế nhả vật lý
-    \item Xử lý giao dịch đơn (không có người dùng đồng thời)
-    \item Thiếu kết nối mạng cho quản lý từ xa
-\end{itemize}
-
-Những hạn chế này là các quyết định thiết kế có ý thức để tập trung vào các khái niệm hệ thống nhúng cốt lõi trong phạm vi và thời gian dự án. Phần 7 cung cấp các đề xuất cải tiến chi tiết giải quyết từng hạn chế.
-
-\subsection{Bài học Kinh nghiệm}
-
-\subsubsection{Thông tin Kỹ thuật}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Thời gian là Quan trọng:} Các lỗi thời gian nhỏ trong giao tiếp I2C hoặc kích hoạt cảm biến dẫn đến các lỗi hệ thống
-    
-    \item \textbf{Chống rung là Cần thiết:} Các công tắc phần cứng yêu cầu lọc phần mềm; rung cơ học gây ra các vấn đề đáng kể
-    
-    \item \textbf{Máy trạng thái Mở rộng Tốt:} Kiến trúc FSM xử lý sự phức tạp tốt hơn các phương pháp dựa trên cờ
-    
-    \item \textbf{Giảm thiểu Ghi Flash:} Giảm ghi chiến lược kéo dài tuổi thọ bộ nhớ đáng kể
-    
-    \item \textbf{Kiểm thử Không thể Bỏ qua:} Kiểm thử có hệ thống đã phát hiện các vấn đề không rõ ràng trong xem xét mã
-\end{itemize}
-
-\subsubsection{Quy trình Phát triển}
-
-\begin{itemize}[leftmargin=*]
-    \item Phát triển gia tăng với kiểm thử thường xuyên giảm thời gian gỡ lỗi
-    \item Thiết kế mô-đun cho phép phát triển song song và khắc phục sự cố dễ dàng hơn
-    \item Tài liệu hóa trong quá trình phát triển (không phải sau đó) cải thiện chất lượng mã
-    \item Gỡ lỗi phần cứng yêu cầu các công cụ máy hiện sóng và phân tích logic
-    \item Kiểm soát phiên bản (Git) cần thiết để theo dõi thay đổi và hoàn tác sai lầm
-\end{itemize}
-
-\subsection{Tác động Dự án}
-
-Dự án này chứng minh rằng các hệ thống nhúng phức tạp có thể được hiện thực thành công trên các nền tảng vi điều khiển chi phí thấp. Tài liệu toàn diện và thiết kế mô-đun làm cho nó phù hợp như:
-
-\begin{itemize}[leftmargin=*]
-    \item Tài liệu tham khảo giáo dục cho các khóa học hệ thống nhúng
-    \item Nền tảng cho phát triển máy bán hàng tự động thương mại
-    \item Nền tảng cho nghiên cứu về tương tác người-máy
-    \item Giường thử nghiệm cho các thực hành kỹ thuật phần mềm nhúng
-    \item Trình diễn khả năng thư viện STM32 HAL
-\end{itemize}
-
 \subsection{Lời kết}
 
 Dự án máy bán hàng tự động đã đạt được thành công các mục tiêu thiết kế và hiện thực một hệ thống nhúng toàn diện thể hiện tích hợp phần cứng, điều khiển máy trạng thái, lưu trữ dữ liệu bền vững và tương tác người dùng. Hệ thống hoạt động tin cậy, xử lý lỗi một cách duyên dáng và cung cấp giao diện trực quan cho cả khách hàng và quản trị viên.
@@ -2563,81 +1359,7 @@ Ngoài các thành tựu kỹ thuật, dự án đã cung cấp kinh nghiệm qu
 Các kỹ năng phát triển qua dự án này—lập trình vi điều khiển, giao tiếp ngoại vi, thiết kế hệ thống thời gian thực và gỡ lỗi có hệ thống—có thể áp dụng trực tiếp cho phát triển hệ thống nhúng chuyên nghiệp trong tự động hóa công nghiệp, điện tử tiêu dùng và các ứng dụng IoT.
 
 \newpage
-\section{Tài liệu Tham khảo \& Tác giả}
-
-\subsection{Tài liệu Tham khảo Kỹ thuật}
-
-\subsubsection{Tài liệu Vi điều khiển}
-
-\begin{enumerate}[leftmargin=*]
-    \item STMicroelectronics, ``STM32F103x8/B Reference Manual,'' RM0008, Rev 21, 2021. Có sẵn: \url{https://www.st.com/resource/en/reference_manual/cd00171190.pdf}
-    
-    \item STMicroelectronics, ``STM32F103C8T6 Datasheet,'' DocID 13587 Rev 18, 2021. Có sẵn: \url{https://www.st.com/resource/en/datasheet/stm32f103c8.pdf}
-    
-    \item STMicroelectronics, ``Description of STM32F1 HAL and Low-Layer Drivers,'' UM1850, Rev 12, 2021. Có sẵn: \url{https://www.st.com/resource/en/user_manual/dm00154093.pdf}
-    
-    \item ARM Limited, ``Cortex-M3 Technical Reference Manual,'' Revision r2p1, 2010.
-\end{enumerate}
-
-\subsubsection{Công cụ Phát triển}
-
-\begin{enumerate}[leftmargin=*, resume]
-    \item STMicroelectronics, ``STM32CubeIDE User Guide,'' UM2609, Rev 3, 2021.
-    
-    \item STMicroelectronics, ``STM32CubeMX User Manual,'' UM1718, Rev 36, 2021.
-    
-    \item STMicroelectronics, ``STM32CubeProgrammer Software User Manual,'' UM2237, Rev 33, 2021.
-\end{enumerate}
-
-\subsubsection{Thành phần Phần cứng}
-
-\begin{enumerate}[leftmargin=*, resume]
-    \item Hitachi, ``HD44780U LCD Controller/Driver Datasheet,'' 1998.
-    
-    \item NXP Semiconductors, ``PCF8574 8-bit I/O Expander for I2C-bus,'' Rev. 05, 2013.
-    
-    \item ELECFreaks, ``HC-SR04 Ultrasonic Sensor Datasheet,'' 2013.
-    
-    \item Cytron Technologies, ``4×4 Matrix Keypad User Manual,'' 2015.
-\end{enumerate}
-
-\subsubsection{Giao thức Giao tiếp}
-
-\begin{enumerate}[leftmargin=*, resume]
-    \item NXP Semiconductors, ``I2C-bus Specification and User Manual,'' UM10204, Rev. 7.0, 2021.
-    
-    \item Philips Semiconductors, ``The I²C-Bus Specification,'' Version 2.1, 2000.
-\end{enumerate}
-
-\subsubsection{Kỹ thuật Phần mềm}
-
-\begin{enumerate}[leftmargin=*, resume]
-    \item Samek, M., ``Practical UML Statecharts in C/C++: Event-Driven Programming for Embedded Systems,'' 2nd Edition, Newnes, 2008.
-    
-    \item Labrosse, J. J., ``Embedded Systems Building Blocks: Complete and Ready-to-Use Modules in C,'' CMP Books, 1999.
-    
-    \item White, E., ``Making Embedded Systems: Design Patterns for Great Software,'' O'Reilly Media, 2011.
-\end{enumerate}
-
-\subsubsection{Lập trình C Nhúng}
-
-\begin{enumerate}[leftmargin=*, resume]
-    \item Pont, M. J., ``Embedded C,'' 2nd Edition, Addison-Wesley, 2002.
-    
-    \item Barr, M., ``Embedded C Coding Standard,'' Barr Group, 2018.
-\end{enumerate}
-
-\subsubsection{Tài nguyên Trực tuyến}
-
-\begin{enumerate}[leftmargin=*, resume]
-    \item Diễn đàn Cộng đồng STM32: \url{https://community.st.com/}
-    
-    \item Kho lưu trữ GitHub STM32: \url{https://github.com/STMicroelectronics}
-    
-    \item Tài liệu ARM CMSIS: \url{https://arm-software.github.io/CMSIS_5/}
-    
-    \item Hướng dẫn Hệ thống Nhúng: \url{https://www.embedded.com/}
-\end{enumerate}
+\section{Thông tin Dự án}
 
 \subsection{Kho lưu trữ Dự án}
 
@@ -2707,7 +1429,7 @@ Dự án này được phát triển bởi ba sinh viên từ Trường Đại h
     \item \textbf{Khóa học:} Đồ án Thiết kế Luận lý
     \item \textbf{Năm học:} 2025 - 2026
     \item \textbf{Thời gian Dự án:} Tháng 09/2025 - Tháng 12/2025
-    \item \textbf{Ngày Hoàn thành:} 20/12/2025
+    \item \textbf{Ngày Hoàn thành:} \today
 \end{itemize}
 
 \subsection{Lời cảm ơn}
@@ -2732,21 +1454,12 @@ Dự án này được phát triển cho mục đích giáo dục như một ph�
 
 Đối với các ứng dụng thương mại hoặc các tác phẩm phái sinh, yêu cầu ghi công thích hợp cho các tác giả gốc và tổ chức.
 
-\subsection{Thông tin Liên hệ}
-
-Đối với các câu hỏi, đề xuất hoặc cơ hội hợp tác liên quan đến dự án này:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Tổ chức:} Trường Đại học Bách Khoa - ĐHQG-HCM
-    \item \textbf{Khoa:} Khoa học và Kỹ thuật Máy tính
-\end{itemize}
-
 \vspace{2cm}
 
 \begin{center}
 \rule{0.8\textwidth}{0.5pt}
 
-\textit{Báo cáo này được biên soạn vào ngày 20 tháng 12 năm 2025}
+\textit{Báo cáo này được biên soạn vào \today}
 
 \textit{Trường Đại học Bách Khoa - ĐHQG-HCM}
 
