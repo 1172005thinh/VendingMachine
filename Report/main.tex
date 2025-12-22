@@ -91,9 +91,7 @@
     Nguyễn Hưng Thịnh\\
     Lê Thế Lộc\\
     Trần Doãn Hoàng Lâm\\
-    \vspace{1cm}\\
-    \textbf{Đơn vị:}\\
-    Trường Đại học Bách Khoa TP.HCM (HCMUT)\\
+    \vspace{3cm}
 }
 
 % Get current date in Vietnamese format automatically
@@ -104,31 +102,6 @@
 % Title page
 \maketitle
 \thispagestyle{empty}
-\newpage
-
-% Abstract
-\begin{abstract}
-Báo cáo kỹ thuật này trình bày quá trình thiết kế 
-và hiện thực hệ thống máy bán hàng tự động thông minh 
-sử dụng vi điều khiển STM32F103C8T6. 
-Hệ thống được thiết kế đặc biệt để bán các vật phẩm trong trò chơi 
-(Trang phục đội tuyển SKT trong Liên Minh Huyền Thoại) và có các tính năng 
-như tự động phát hiện khách hàng thông qua cảm biến siêu âm, 
-giao diện LCD tương tác với bàn phím, 
-quản lý kho hàng sử dụng bộ nhớ Flash, 
-xử lý thanh toán toàn diện 
-và chế độ quản trị bảo mật để kiểm soát kho hàng. 
-Dự án minh họa các ứng dụng thực tế của 
-nguyên lý hệ thống nhúng bao gồm thiết kế 
-máy trạng thái hữu hạn, giao tiếp ngoại vi, 
-điều khiển thời gian thực và lưu trữ dữ liệu. 
-Việc hiện thực sử dụng thư viện STM32 HAL và 
-bao gồm các trình điều khiển tùy chỉnh cho giao tiếp LCD I2C, 
-quét bàn phím ma trận 4x4 và đo khoảng cách siêu âm HC-SR04. 
-Các tính năng chính bao gồm tự động bật nguồn thông qua đo khoảng cách, 
-xử lý giao dịch đa trạng thái với xử lý lỗi và lưu trữ kho hàng 
-dựa trên bộ nhớ Flash.
-\end{abstract}
 
 \newpage
 
@@ -154,7 +127,7 @@ Hệ thống máy bán hàng tự động tuân theo mẫu thiết kế kiến t
 
 Kiến trúc bao gồm bốn lớp chính:
 
-\subsubsection{Lớp Phần cứng}
+\textbf{Lớp Phần cứng}
 
 Lớp này bao gồm tất cả các thành phần vật lý và giao diện phần cứng cấp thấp:
 
@@ -167,7 +140,7 @@ Lớp này bao gồm tất cả các thành phần vật lý và giao diện ph�
     \item \textbf{Đèn báo LED:} LED tích hợp trên PC13 để chỉ báo trạng thái hệ thống
 \end{itemize}
 
-\subsubsection{Lớp Trình điều khiển}
+\textbf{Lớp Trình điều khiển}
 
 Các trình điều khiển ngoại vi tùy chỉnh cung cấp sự trừu tượng hóa phần cứng:
 
@@ -179,7 +152,7 @@ Các trình điều khiển ngoại vi tùy chỉnh cung cấp sự trừu tư�
     \item \textbf{Quản lý Bộ định thời (timer.c):} Hệ thống định thời phần mềm cho các thời gian chờ và độ trễ trạng thái
 \end{itemize}
 
-\subsubsection{Lớp Ứng dụng}
+\textbf{Lớp Ứng dụng}
 
 Logic nghiệp vụ và quản lý trạng thái:
 
@@ -189,7 +162,7 @@ Logic nghiệp vụ và quản lý trạng thái:
     \item \textbf{Mô-đun Quản trị (ADMIN.c):} Xác thực mật khẩu và quản lý bảo mật
 \end{itemize}
 
-\subsubsection{Lớp Giao diện Người dùng}
+\textbf{Lớp Giao diện Người dùng}
 
 Quản lý trình bày và tương tác:
 
@@ -198,48 +171,6 @@ Quản lý trình bày và tương tác:
     \item Thông dịch đầu vào bàn phím và ánh xạ lệnh
     \item Phản hồi trạng thái và hiển thị thông báo lỗi
     \item Luồng điều hướng đa màn hình
-\end{itemize}
-
-\subsection{Triết lý Thiết kế}
-
-Thiết kế hệ thống tuân theo một số nguyên tắc chính:
-
-\subsubsection{Tính Mô-đun và Phân tách Mối quan tâm}
-
-Mỗi thành phần chức năng được hiện thực như một mô-đun độc lập với các giao diện được xác định rõ. Ví dụ, trình điều khiển LCD cung cấp các hàm cấp cao như \texttt{lcd\_write\_string()} mà không để lộ chi tiết giao tiếp I2C. Tính mô-đun này tạo điều kiện thuận lợi cho việc kiểm tra, gỡ lỗi và sửa đổi trong tương lai.
-
-\subsubsection{Kiến trúc Hướng Trạng thái}
-
-Hệ thống sử dụng máy trạng thái hữu hạn làm cấu trúc điều khiển cốt lõi, cung cấp:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Hành vi Dự đoán được:} Mỗi trạng thái có các điều kiện đầu vào, hành động và chuyển đổi đầu ra được xác định
-    \item \textbf{Phục hồi Lỗi:} Các trạng thái lỗi cho phép xử lý nhẹ nhàng các đầu vào không hợp lệ và điều kiện thời gian chờ
-    \item \textbf{Khả năng Bảo trì:} Thêm các tính năng mới đòi hỏi thêm các trạng thái và chuyển đổi mà không cần cấu trúc lại mã hiện có
-    \item \textbf{Gỡ lỗi:} Theo dõi biến trạng thái đơn giản hóa việc phân tích hành vi hệ thống
-\end{itemize}
-
-\subsubsection{Vận hành An toàn}
-
-Nhiều cơ chế an toàn đảm bảo độ tin cậy của hệ thống:
-
-\begin{itemize}[leftmargin=*]
-    \item Bộ định thời gian chờ ngăn chặn việc chờ đợi vô thời hạn (30 giây cho khách hàng, 60 giây cho quản trị viên)
-    \item Bộ đếm lỗi giới hạn các lỗi liên tiếp (tối đa 5 lần thử)
-    \item Kiểm tra đầu vào từ chối số lượng và số tiền thanh toán không hợp lệ
-    \item Xác minh số ma thuật Flash ngăn chặn việc tải dữ liệu bị hỏng
-\end{itemize}
-
-\subsubsection{Thiết kế Lấy Người dùng làm Trung tâm}
-
-Giao diện ưu tiên trải nghiệm người dùng thông qua:
-
-\begin{itemize}[leftmargin=*]
-    \item Điều hướng rõ ràng với các ánh xạ phím nhất quán (U/D để điều hướng, \# để xác nhận, * để quay lại)
-    \item Phản hồi ngay lập tức cho mọi hành động của người dùng
-    \item Hiển thị văn bản căn giữa để cải thiện khả năng đọc
-    \item Thông báo lỗi cung cấp thông tin với hướng dẫn phục hồi
-    \item Tự động quay lại trạng thái an toàn khi hết thời gian chờ
 \end{itemize}
 
 \subsection{Yêu cầu Hệ thống}
@@ -334,8 +265,6 @@ Phần này cung cấp thông số kỹ thuật chi tiết và chi tiết tích 
 
 STM32F103C8T6 (thường được gọi là "Blue Pill") đóng vai trò là đơn vị xử lý trung tâm của hệ thống.
 
-\subsubsection{Lý do Lựa chọn}
-
 STM32F103C8T6 được chọn cho dự án này vì:
 
 \begin{itemize}[leftmargin=*]
@@ -346,8 +275,6 @@ STM32F103C8T6 được chọn cho dự án này vì:
     \item \textbf{Hiệu quả Chi phí:} Bo mạch phát triển giá rẻ có sẵn rộng rãi
     \item \textbf{Hỗ trợ Cộng đồng:} Cộng đồng người dùng lớn và tài liệu phong phú
 \end{itemize}
-
-\subsubsection{Cấu hình Chân}
 
 Các gán chân quan trọng cho dự án này:
 
@@ -371,11 +298,9 @@ PA14 & SWCLK & Xung nhịp Gỡ lỗi Serial Wire \\
 \end{tabular}
 \end{table}
 
-\subsection{Mô-đun Hiển thị - LCD 16x2 với I2C}
+\subsection{LCD 1602 với I2C}
 
 Hệ thống sử dụng màn hình LCD 16x2 kết hợp với bộ mở rộng I/O I2C PCF8574 để hiển thị thông tin.
-
-\subsubsection{Giao thức Giao tiếp}
 
 Hệ thống hiện thực giao tiếp I2C bit-banged:
 
@@ -394,11 +319,9 @@ Hệ thống hiện thực giao tiếp I2C bit-banged:
     \item Tạo xung chân Enable
 \end{enumerate}
 
-\subsection{Thiết bị Đầu vào - Bàn phím Ma trận 4×4}
+\subsection{Bàn phím Ma trận 4×4}
 
 Bàn phím ma trận cung cấp 16 phím được sắp xếp thành 4 hàng và 4 cột, hoạt động dựa trên nguyên tắc quét hàng-cột.
-
-\subsubsection{Chiến lược Chống rung}
 
 Các công tắc cơ học thể hiện hiện tượng rung, gây ra nhiều chuyển đổi trong một lần nhấn. Hệ thống hiện thực chống rung bằng phần mềm:
 
@@ -415,11 +338,9 @@ if (HAL_GPIO_ReadPin(GPIOA, col_pins[c]) == GPIO_PIN_RESET) {
 }
 \end{lstlisting}
 
-\subsection{Mô-đun Cảm biến - Cảm biến Siêu âm HC-SR04}
+\subsection{Cảm biến Siêu âm HC-SR04}
 
 HC-SR04 sử dụng phép đo thời gian bay (time-of-flight) để đo khoảng cách.
-
-\subsubsection{Cấu hình Bắt đầu vào Bộ định thời}
 
 Hệ thống sử dụng Kênh 1 của TIM1 được cấu hình cho chế độ Bắt đầu vào (Input Capture):
 
@@ -442,8 +363,6 @@ Trình tự đo:
 
 Hệ thống sử dụng trang cuối cùng (Trang 63) của bộ nhớ Flash nội bộ để lưu trữ dữ liệu kho hàng, đảm bảo dữ liệu được bảo toàn khi mất điện.
 
-\subsubsection{Chiến lược Bảo toàn Dữ liệu}
-
 Cấu trúc dữ liệu kho hàng (44 byte mỗi sản phẩm):
 \begin{itemize}[leftmargin=*]
     \item \textbf{Số Ma thuật:} 4 byte (0xDEADBEEF) để xác thực dữ liệu
@@ -457,54 +376,11 @@ Khi bật nguồn:
     \item Nếu số ma thuật khớp 0xDEADBEEF: Tải kho hàng từ Flash
     \item Nếu số ma thuật không hợp lệ: Khởi tạo kho hàng mặc định và lưu vào Flash
 \end{enumerate}
-
-\subsection{Nguồn điện và Giao diện Lập trình}
-
-\subsubsection{Yêu cầu Nguồn điện}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Lõi STM32:} 3.3V, ~50mA
-    \item \textbf{Mô-đun LCD:} 5V, ~30mA (không đèn nền), ~150mA (có đèn nền)
-    \item \textbf{Cảm biến HC-SR04:} 5V, ~15mA
-    \item \textbf{Bàn phím:} Tiêu thụ dòng không đáng kể
-    \item \textbf{Tổng Hệ thống:} ~200mA ở 5V hoạt động điển hình
-\end{itemize}
-
-Phân phối nguồn:
-\begin{itemize}[leftmargin=*]
-    \item Bộ chuyển đổi ngoài 5V cung cấp cho các đường nguồn breadboard
-    \item Bộ ổn áp 3.3V tích hợp (AMS1117-3.3) cấp nguồn cho STM32
-    \item LCD và cảm biến kết nối trực tiếp với đường nguồn 5V
-\end{itemize}
-
-\subsubsection{Bộ nạp ST-Link V2}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Giao diện:} SWD (Serial Wire Debug)
-    \item \textbf{Kết nối:}
-    \begin{itemize}
-        \item SWDIO → PA13
-        \item SWCLK → PA14
-        \item GND → GND
-        \item 3.3V → 3.3V (optional for powering during debug)
-    \end{itemize}
-    \item \textbf{Tính năng:} Programming, debugging, real-time variable monitoring
-\end{itemize}
-
 \newpage
+
 \section{Thiết kế Phần mềm}
 
 \subsection{Kiến trúc Máy trạng thái Hữu hạn}
-
-Cốt lõi của phần mềm máy bán hàng tự động là một máy trạng thái hữu hạn (FSM) với 19 trạng thái riêng biệt quản lý toàn bộ vòng đời giao dịch, xử lý lỗi và các chức năng quản trị. FSM cung cấp hành vi xác định và đơn giản hóa việc gỡ lỗi bằng cách làm cho trạng thái hệ thống rõ ràng tại mọi thời điểm.
-
-\subsubsection{Định nghĩa Trạng thái}
-
-Hệ thống hiện thực 19 trạng thái riêng biệt, được định nghĩa trong \texttt{fsm\_vm.h}, bao gồm các trạng thái khởi tạo, giao dịch khách hàng và chế độ quản trị.
-
-\subsubsection{Phân loại Trạng thái}
-
-19 trạng thái được tổ chức thành các danh mục chức năng:
 
 \paragraph{Trạng thái Khởi tạo (1-2):}
 \begin{itemize}[leftmargin=*]
@@ -537,7 +413,7 @@ Hệ thống hiện thực 19 trạng thái riêng biệt, được định ngh�
     \item \textbf{CONFIRM\_EXIT\_ADMIN\_MODE:} Hộp thoại xác nhận đăng xuất
 \end{itemize}
 
-\subsubsection{Sơ đồ Chuyển đổi Trạng thái}
+\textbf{Sơ đồ Chuyển đổi Trạng thái}
 
 Các chuyển đổi trạng thái tuân theo các đường dẫn chính sau:
 
@@ -577,21 +453,11 @@ CHOOSING_SKIN (Phím R + mật khẩu) -> ADMIN_MODE
     -> CHOOSING_SKIN_TO_ADJUST hoặc CONFIRM_EXIT_ADMIN_MODE
 \end{verbatim}
 
-\subsubsection{Hiện thực FSM}
-
-FSM được hiện thực sử dụng cấu trúc switch-case trong \texttt{fsm\_vm.c}. Mỗi trạng thái hiện thực:
-\begin{enumerate}[leftmargin=*]
-    \item Hành động đầu vào (cập nhật hiển thị, khởi tạo biến)
-    \item Xử lý đầu vào (quét bàn phím)
-    \item Điều kiện chuyển đổi (cờ bộ định thời, đầu vào người dùng, kết quả xác thực)
-    \item Hành động đầu ra (dọn dẹp, thiết lập bộ định thời)
-\end{enumerate}
-
 \subsection{Hệ thống Quản lý Bộ định thời}
 
 Hệ thống sử dụng cơ chế bộ định thời phần mềm để quản lý độ trễ, thời gian chờ và chuyển đổi trạng thái mà không chặn thực thi.
 
-\subsubsection{Các loại Bộ định thời}
+\textbf{Các loại Bộ định thời}
 
 Năm loại bộ định thời độc lập được hiện thực:
 
@@ -615,7 +481,7 @@ sensor\_timer & 100ms & Khoảng thời gian thăm dò cảm biến siêu âm \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Hiện thực Bộ định thời}
+\textbf{Hiện thực Bộ định thời}
 
 Mỗi bộ định thời bao gồm ba thành phần:
 
@@ -633,7 +499,7 @@ void setWelcomeTimer(int duration) {
 }
 \end{lstlisting}
 
-\subsubsection{Thực thi Bộ định thời}
+\textbf{Thực thi Bộ định thời}
 
 Hàm \texttt{timerRun()} được gọi mỗi 1ms (thường trong ngắt SysTick):
 
@@ -649,7 +515,7 @@ void timerRun() {
 }
 \end{lstlisting}
 
-\subsubsection{Mẫu Sử dụng Bộ định thời}
+\textbf{Mẫu Sử dụng Bộ định thời}
 
 Cách sử dụng điển hình trong các trạng thái FSM:
 
@@ -672,7 +538,7 @@ case WELCOME_SECTION:
 
 \subsection{Cấu trúc Dữ liệu và Quản lý Bộ nhớ}
 
-\subsubsection{Cấu trúc Dữ liệu Sản phẩm}
+\textbf{Cấu trúc Dữ liệu Sản phẩm}
 
 Hệ thống kho hàng sử dụng kiểu dữ liệu có cấu trúc cho sản phẩm:
 
@@ -691,7 +557,7 @@ Skin skt_skins[16];
 
 Dấu chân bộ nhớ: 44 byte mỗi sản phẩm × 16 sản phẩm = 704 byte
 
-\subsubsection{Bố cục Bộ nhớ Flash}
+\textbf{Bố cục Bộ nhớ Flash}
 
 Lưu trữ dữ liệu sử dụng bộ nhớ Flash nội bộ:
 
@@ -708,7 +574,7 @@ Lưu trữ dữ liệu sử dụng bộ nhớ Flash nội bộ:
 // Total: 708 bytes
 \end{lstlisting}
 
-\subsubsection{Biến Toàn cục}
+\textbf{Biến Toàn cục}
 
 Các biến trạng thái chính được duy trì bởi FSM:
 
@@ -939,7 +805,7 @@ Cấu trúc phân cấp này giảm thiểu sự phụ thuộc vòng tròn và t
 
 \subsection{Hiện thực Trình điều khiển Ngoại vi}
 
-\subsubsection{Trình điều khiển LCD I2C}
+\paragraph{Trình điều khiển LCD I2C:}
 
 Trình điều khiển LCD hiện thực chế độ giao tiếp 4-bit qua giao thức I2C bit-banged. Cách tiếp cận này được chọn thay vì I2C phần cứng để duy trì khả năng tương thích với các bo mạch chuyển đổi PCF8574 khác nhau và cung cấp khả năng kiểm soát thời gian tốt hơn.
 
@@ -1042,7 +908,7 @@ void lcd_init(uint8_t addr) {
 }
 \end{lstlisting}
 
-\subsubsection{Trình điều khiển Bàn phím}
+\paragraph{Trình điều khiển Bàn phím}
 
 Trình điều khiển bàn phím hiện thực quét hàng với chống rung:
 
@@ -1088,13 +954,49 @@ char Keypad_Scan(void) {
 }
 \end{lstlisting}
 
-\subsubsection{Trình điều khiển Cảm biến Siêu âm}
+\paragraph{Trình điều khiển Cảm biến Siêu âm}
 
-Trình điều khiển cảm biến sử dụng bộ định thời bắt tín hiệu đầu vào để đo thời gian phản hồi của xung siêu âm, từ đó tính toán khoảng cách chính xác.
+Trình điều khiển cảm biến sử dụng bộ định thời bắt tín hiệu đầu vào để đo thời gian phản hồi của xung siêu âm. Quá trình đo bao gồm kích hoạt xung Trigger và đo độ rộng xung Echo sử dụng ngắt Input Capture.
+
+\begin{lstlisting}[language=C, caption={Đo khoảng cách với HC-SR04}]
+void Sensor_Trigger(void) {
+    HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_SET);
+    delay_us(10);
+    HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_RESET);
+    __HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) {
+        if (Is_First_Captured==0) {
+            IC_Val1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+            Is_First_Captured = 1;
+            __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, 
+                                        TIM_INPUTCHANNELPOLARITY_FALLING);
+        }
+        else if (Is_First_Captured==1) {
+            IC_Val2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+            __HAL_TIM_SET_COUNTER(htim, 0);
+
+            if (IC_Val2 > IC_Val1) 
+                Difference = IC_Val2-IC_Val1;
+            else 
+                Difference = (0xffff - IC_Val1) + IC_Val2;
+
+            Distance = Difference * .034/2;
+            Is_First_Captured = 0;
+
+            __HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, 
+                                        TIM_INPUTCHANNELPOLARITY_RISING);
+            __HAL_TIM_DISABLE_IT(&htim1, TIM_IT_CC1);
+        }
+    }
+}
+\end{lstlisting}
 
 \subsection{Chi tiết Hiện thực Máy trạng thái}
 
-\subsubsection{Hiện thực các Trạng thái Quan trọng}
+Hiện thực các Trạng thái quan trọng:
 
 \paragraph{Trạng thái CHOOSING\_SKIN:}
 
@@ -1142,13 +1044,111 @@ break;
 
 \paragraph{Trạng thái PAYMENT\_INPUT:}
 
-.
+Trạng thái này xử lý việc nhập tiền từ người dùng, cộng dồn số tiền đã trả và kiểm tra xem đã đủ để thanh toán chưa.
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Trạng thái Chọn Sản phẩm:} Xử lý phím Lên/Xuống để duyệt danh sách, phím \# để xem chi tiết và phím R để vào chế độ quản trị.
-    \item \textbf{Trạng thái Thanh toán:} Cộng dồn các mệnh giá tiền được nhập, kiểm tra tính hợp lệ và tính toán tiền thừa.
-    \item \textbf{Trạng thái Quản trị:} Cho phép điều chỉnh số lượng và giá cả của từng sản phẩm thông qua giao diện trực quan.
-\end{itemize}
+\begin{lstlisting}[language=C, caption={Xử lý Thanh toán}]
+case PAYMENT_INPUT:
+{
+    if (timeout_timer_flag == 1) {
+        // Timeout handling...
+        break;
+    }
+
+    char key = Keypad_Scan();
+    if (key != 0) {
+        setTimeoutTimer(30000);
+
+        if (key >= '0' && key <= '9') {
+            // Accumulate input amount
+            if (money_inserted_current < 1000000000) {
+                money_inserted_current = money_inserted_current * 10 + (key - '0');
+                display_payment_input();
+            }
+        }
+        else if (key == '#') {
+            if (!is_valid_money(money_inserted_current)) {
+                payment_error_count++;
+                // Error handling...
+            }
+            else {
+                money_paid_accumulated += money_inserted_current;
+
+                if (money_paid_accumulated < total_payable) {
+                    status = PAYMENT_INFO_WAIT;
+                    // Show remaining amount
+                }
+                else {
+                    status = PAYMENT_INFO_WAIT;
+                    // Show change and success
+                }
+            }
+        }
+    }
+}
+break;
+\end{lstlisting}
+
+\paragraph{Trạng thái ADMIN\_MODE:}
+
+Chế độ quản trị cho phép người dùng có thẩm quyền thay đổi thông tin sản phẩm.
+
+\begin{lstlisting}[language=C, caption={Chế độ Quản trị}]
+case CHOOSING_SKIN_TO_ADJUST:
+{
+    if (timeout_timer_flag == 1) {
+        status = TIMEOUT_ADMIN_MODE;
+        break;
+    }
+
+    char key = Keypad_Scan();
+    if (key != 0) {
+        setTimeoutTimer(60000);
+
+        if (key == 'U') {
+            current_id--;
+            if (current_id < 1) current_id = 16;
+            display_current_skin(current_id);
+        }
+        else if (key == 'D') {
+            current_id++;
+            if (current_id > 16) current_id = 1;
+            display_current_skin(current_id);
+        }
+        else if (key == '#') {
+            status = ADJUST_QUANTITY_AND_PRICE;
+            lcd_clear();
+            display_adjust_quantity_and_price(current_id, 0);
+        }
+    }
+}
+break;
+\end{lstlisting
+        if (key == 'U') {
+            current_id--;
+            if (current_id < 1) current_id = 16;  // Wrap around
+            display_current_skin(current_id);
+        }
+        else if (key == 'D') {
+            current_id++;
+            if (current_id > 16) current_id = 1;  // Wrap around
+            display_current_skin(current_id);
+        }
+        else if (key == '#') {
+            status = DISPLAY_INFO;
+            lcd_clear();
+            display_skin_detail(current_id);
+        }
+        else if (key == 'R') {
+            int is_admin = admin_log();
+            if (is_admin) {
+                status = ADMIN_MODE;
+                // Display admin success message
+            }
+        }
+    }
+}
+break;
+\end{lstlisting}
 
 \subsection{Quản lý Hiển thị và Xử lý Lỗi}
 
@@ -1200,51 +1200,6 @@ Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1C
 \end{itemize}
 
 \newpage
-\section{Đề xuất cho Công việc Tương lai}
-
-While the current implementation successfully demonstrates embedded vending machine concepts, several enhancements could expand functionality and commercial viability.
-
-\subsection{Màn hình Lớn hơn}
-
-\textbf{Trạng thái Hiện tại:} LCD ký tự 16×2 giới hạn hiển thị thông tin.
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Nâng cấp lên LCD đồ họa (128×64 hoặc 320×240 pixel)
-    \item Màn hình màu TFT với giao diện cảm ứng
-    \item Hiển thị hình ảnh sản phẩm, thông tin dinh dưỡng, khuyến mãi
-    \item Hỗ trợ đa ngôn ngữ với các biểu tượng đồ họa
-\end{itemize}
-
-\textbf{Lợi ích:} Cải thiện trải nghiệm người dùng, giảm thời gian làm quen, trình bày thương hiệu tốt hơn, tính năng hỗ trợ truy cập.
-
-\subsection{Mở rộng Dung lượng Kho hàng}
-
-\textbf{Trạng thái Hiện tại:} 16 sản phẩm bị giới hạn bởi điều hướng hiển thị và bộ nhớ.
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item EEPROM ngoài (I2C/SPI) cho cơ sở dữ liệu kho hàng mở rộng
-    \item Hỗ trợ 100+ sản phẩm với điều hướng dựa trên danh mục
-    \item Lưu trữ thêm siêu dữ liệu sản phẩm (mô tả, hình ảnh, ngày hết hạn)
-    \item Hiện thực truy vấn kiểu cơ sở dữ liệu cho tìm kiếm sản phẩm
-\end{itemize}
-
-\textbf{Cách tiếp cận Kỹ thuật:} AT24C256 (32KB EEPROM) hoặc lớn hơn, cấu trúc menu phân cấp, hệ thống phân loại sản phẩm.
-
-\subsection{Hỗ trợ Đa ngôn ngữ}
-
-\textbf{Trạng thái Hiện tại:} Giao diện chỉ tiếng Anh.
-
-\textbf{Cải tiến Đề xuất:}
-\begin{itemize}[leftmargin=*]
-    \item Tùy chọn tiếng Việt, tiếng Anh và các ngôn ngữ khác
-    \item Menu chọn ngôn ngữ khi khởi động hoặc qua chế độ quản trị
-    \item Cấu trúc bảng chuỗi cho quản lý dịch thuật hiệu quả
-    \item Hỗ trợ Unicode cho các ký tự không phải ASCII
-\end{itemize}
-
-\newpage
 \section{Kết luận}
 
 \subsection{Thành tựu Dự án}
@@ -1281,32 +1236,20 @@ Mặc dù được phát triển như một dự án giáo dục, hệ thống t
 
 Kiến trúc có thể được thích ứng cho các kịch bản bán lẻ tự động khác nhau bao gồm máy bán hàng truyền thống, ki-ốt bán vé, hệ thống cho thuê và tủ khóa thông minh.
 
-\subsection{Lời kết}
-
-Dự án máy bán hàng tự động đã đạt được thành công các mục tiêu thiết kế và hiện thực một hệ thống nhúng toàn diện thể hiện tích hợp phần cứng, điều khiển máy trạng thái, lưu trữ dữ liệu bền vững và tương tác người dùng. Hệ thống hoạt động tin cậy, xử lý lỗi một cách duyên dáng và cung cấp giao diện trực quan cho cả khách hàng và quản trị viên.
-
-Ngoài các thành tựu kỹ thuật, dự án đã cung cấp kinh nghiệm quý báu về phương pháp thiết kế hệ thống nhúng, tích hợp phần cứng-phần mềm và giải quyết vấn đề dưới các ràng buộc tài nguyên. Kiến trúc mô-đun và tài liệu kỹ lưỡng đảm bảo hệ thống có thể phục vụ như một nền tảng cho các cải tiến trong tương lai và mục đích giáo dục.
-
-Các kỹ năng phát triển qua dự án này—lập trình vi điều khiển, giao tiếp ngoại vi, thiết kế hệ thống thời gian thực và gỡ lỗi có hệ thống—có thể áp dụng trực tiếp cho phát triển hệ thống nhúng chuyên nghiệp trong tự động hóa công nghiệp, điện tử tiêu dùng và các ứng dụng IoT.
-
 \newpage
 \section{Thông tin Dự án}
 
-\subsection{Kho lưu trữ Dự án}
+\subsection{GitHub repository}
 
 Mã nguồn dự án, tài liệu và tài nguyên có sẵn tại:
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Kho lưu trữ GitHub:} \url{https://github.com/1172005thinh/VendingMachine}
-    \item \textbf{Cấu trúc Dự án:} Thư mục VendingMachine/ chứa tất cả các tệp nguồn
+    \item \textbf{GitHub:} \url{https://github.com/1172005thinh/VendingMachine}
+    \item \textbf{Source code} Thư mục VendingMachine/ chứa tất cả các tệp nguồn
     \item \textbf{Tài liệu:} README.md với hướng dẫn thiết lập
 \end{itemize}
 
 \subsection{Tác giả}
-
-\subsubsection{Nhóm Dự án}
-
-Dự án này được phát triển bởi ba sinh viên từ Trường Đại học Bách Khoa - ĐHQG-HCM (HCMUT):
 
 \begin{table}[H]
 \centering
@@ -1343,60 +1286,13 @@ Dự án này được phát triển bởi ba sinh viên từ Trường Đại h
 \end{tabular}
 \end{table}
 
-\subsubsection{Tổ chức}
-
-\textbf{Trường Đại học Bách Khoa - ĐHQG-HCM (HCMUT)}
-
-\begin{itemize}[leftmargin=*]
-    \item Khoa Khoa học và Kỹ thuật Máy tính
-    \item Bộ môn Đồ án Thiết kế Luận lý
-    \item Địa chỉ: 268 Lý Thường Kiệt, Quận 10, Thành phố Hồ Chí Minh, Việt Nam
-    \item Website: \url{https://www.hcmut.edu.vn/}
-\end{itemize}
-
-\subsubsection{Thông tin Khóa học}
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Khóa học:} Đồ án Thiết kế Luận lý
-    \item \textbf{Năm học:} 2025 - 2026
-    \item \textbf{Thời gian Dự án:} Tháng 09/2025 - Tháng 12/2025
-    \item \textbf{Ngày Hoàn thành:} \today
-\end{itemize}
-
 \subsection{Lời cảm ơn}
 
 Các tác giả xin bày tỏ lòng biết ơn đến:
 
 \begin{itemize}[leftmargin=*]
-    \item Các cố vấn khoa về hướng dẫn các nguyên tắc thiết kế hệ thống luân lý
+    \item Thầy Nguyễn Thành Lộc đã hướng dẫn các nguyên tắc thiết kế hệ thống luận lý
     \item Cộng đồng mã nguồn mở về các ví dụ mã và hỗ trợ khắc phục sự cố
 \end{itemize}
-
-\subsection{Giấy phép và Sử dụng}
-
-Dự án này được phát triển cho mục đích giáo dục như một phần của khóa học tại HCMUT. Mã nguồn và tài liệu được cung cấp cho:
-
-\begin{itemize}[leftmargin=*]
-    \item Tham khảo giáo dục và học tập
-    \item Nghiên cứu và học tập học thuật
-    \item Trình diễn hệ thống nhúng phi thương mại
-    \item Phát triển và cải tiến thêm
-\end{itemize}
-
-Đối với các ứng dụng thương mại hoặc các tác phẩm phái sinh, yêu cầu ghi công thích hợp cho các tác giả gốc và tổ chức.
-
-\vspace{2cm}
-
-\begin{center}
-\rule{0.8\textwidth}{0.5pt}
-
-\textit{Báo cáo này được biên soạn vào \today}
-
-\textit{Trường Đại học Bách Khoa - ĐHQG-HCM}
-
-\textit{Hệ thống Máy bán hàng Tự động - Đồ án Thiết kế Luận lý}
-
-\rule{0.8\textwidth}{0.5pt}
-\end{center}
 
 \end{document}
