@@ -125,54 +125,6 @@ Hệ thống máy bán hàng tự động tuân theo mẫu thiết kế kiến t
     \label{fig:system_architecture}
 \end{figure}
 
-Kiến trúc bao gồm bốn lớp chính:
-
-\textbf{Lớp Phần cứng}
-
-Lớp này bao gồm tất cả các thành phần vật lý và giao diện phần cứng cấp thấp:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Vi điều khiển STM32F103C8T6:} Đơn vị xử lý trung tâm quản lý mọi hoạt động, chạy ở tần số 72 MHz với lõi ARM Cortex-M3
-    \item \textbf{Màn hình LCD I2C:} Màn hình ký tự 16x2 kết nối qua bộ mở rộng I2C PCF8574 trên các chân PB6 (SCL) và PB7 (SDA)
-    \item \textbf{Bàn phím ma trận 4x4:} Thiết bị đầu vào với các hàng trên PA0-PA3 và các cột trên PA4-PA7
-    \item \textbf{Cảm biến siêu âm HC-SR04:} Mô-đun đo khoảng cách sử dụng bộ bắt đầu vào TIM1 để định thời chính xác
-    \item \textbf{Bộ nhớ Flash:} Flash nội bộ 64KB với Trang 63 được dành riêng để lưu trữ dữ liệu
-    \item \textbf{Đèn báo LED:} LED tích hợp trên PC13 để chỉ báo trạng thái hệ thống
-\end{itemize}
-
-\textbf{Lớp Trình điều khiển}
-
-Các trình điều khiển ngoại vi tùy chỉnh cung cấp sự trừu tượng hóa phần cứng:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Trình điều khiển LCD I2C (tv\_lcd\_i2c.c):} Hiện thực giao tiếp LCD 4-bit qua giao thức I2C bit-banged
-    \item \textbf{Trình điều khiển Bàn phím (keypad.c):} Cung cấp chức năng quét, chống rung và ánh xạ ký tự
-    \item \textbf{Trình điều khiển Cảm biến (sensor.c):} Xử lý kích hoạt siêu âm và tính toán khoảng cách thông qua bộ bắt thời gian
-    \item \textbf{Trình điều khiển I2C (i2c.c):} Hiện thực giao thức I2C dựa trên phần mềm để giao tiếp LCD
-    \item \textbf{Quản lý Bộ định thời (timer.c):} Hệ thống định thời phần mềm cho các thời gian chờ và độ trễ trạng thái
-\end{itemize}
-
-\textbf{Lớp Ứng dụng}
-
-Logic nghiệp vụ và quản lý trạng thái:
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Máy trạng thái hữu hạn (fsm\_vm.c):} Logic cốt lõi với 19 trạng thái quản lý luồng giao dịch, xử lý lỗi và chuyển đổi chế độ
-    \item \textbf{Quản lý Kho hàng (store.c):} Xử lý cấu trúc dữ liệu sản phẩm, thao tác đọc/ghi Flash và cập nhật tồn kho
-    \item \textbf{Mô-đun Quản trị (ADMIN.c):} Xác thực mật khẩu và quản lý bảo mật
-\end{itemize}
-
-\textbf{Lớp Giao diện Người dùng}
-
-Quản lý trình bày và tương tác:
-
-\begin{itemize}[leftmargin=*]
-    \item Định dạng hiển thị LCD và trình bày văn bản căn giữa
-    \item Thông dịch đầu vào bàn phím và ánh xạ lệnh
-    \item Phản hồi trạng thái và hiển thị thông báo lỗi
-    \item Luồng điều hướng đa màn hình
-\end{itemize}
-
 \subsection{Yêu cầu Hệ thống}
 
 \begin{enumerate}[label=FR\arabic*:, leftmargin=*]
@@ -249,7 +201,6 @@ Hoạt động hoàn chỉnh của hệ thống tuân theo trình tự sau:
     \end{itemize}
 \end{enumerate}
 
-\newpage
 \section{Thành phần Phần cứng}
 
 Phần này cung cấp thông số kỹ thuật chi tiết và chi tiết tích hợp cho tất cả các thành phần phần cứng được sử dụng trong hệ thống máy bán hàng tự động.
@@ -376,7 +327,7 @@ Khi bật nguồn:
     \item Nếu số ma thuật khớp 0xDEADBEEF: Tải kho hàng từ Flash
     \item Nếu số ma thuật không hợp lệ: Khởi tạo kho hàng mặc định và lưu vào Flash
 \end{enumerate}
-\newpage
+
 
 \section{Thiết kế Phần mềm}
 
@@ -800,7 +751,7 @@ main.c
 
 Cấu trúc phân cấp này giảm thiểu sự phụ thuộc vòng tròn và tạo điều kiện thuận lợi cho kiểm thử đơn vị.
 
-\newpage
+
 \section{Hiện thực}
 
 \subsection{Hiện thực Trình điều khiển Ngoại vi}
@@ -1163,7 +1114,7 @@ Hệ thống sử dụng các hàm định dạng văn bản để căn giữa n
     \item Giảm thiểu số lần ghi vào bộ nhớ Flash bằng cách kiểm tra sự thay đổi dữ liệu trước khi ghi.
 \end{itemize}
 
-\newpage
+
 \section{Trình diễn}
 
 Phần này trình bày các quy trình kiểm thử, kết quả vận hành và phân tích hiệu năng của hệ thống máy bán hàng tự động.\newline
@@ -1174,14 +1125,14 @@ Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1C
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../Pictures/quickDemo_1.png}
-        \caption{Demo vận hành hệ thống - Phần 1}
+        \caption{Demo vận hành hệ thống}
         \label{fig:demo_1}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{../Pictures/quickDemo_2.png}
-        \caption{Demo vận hành hệ thống - Phần 2}
+        \caption{Demo vận hành hệ thống}
         \label{fig:demo_2}
     \end{subfigure}
     \caption{Trình diễn vận hành Máy bán hàng tự động}
@@ -1199,7 +1150,7 @@ Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1C
     \item Thực thi giới hạn 5 lỗi ngăn chặn vòng lặp thử lại vô hạn
 \end{itemize}
 
-\newpage
+
 \section{Kết luận}
 
 \subsection{Thành tựu Dự án}
@@ -1236,7 +1187,7 @@ Mặc dù được phát triển như một dự án giáo dục, hệ thống t
 
 Kiến trúc có thể được thích ứng cho các kịch bản bán lẻ tự động khác nhau bao gồm máy bán hàng truyền thống, ki-ốt bán vé, hệ thống cho thuê và tủ khóa thông minh.
 
-\newpage
+
 \section{Thông tin Dự án}
 
 \subsection{GitHub repository}
