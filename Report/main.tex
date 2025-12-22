@@ -1169,8 +1169,6 @@ Hệ thống sử dụng các hàm định dạng văn bản để căn giữa n
 Phần này trình bày các quy trình kiểm thử, kết quả vận hành và phân tích hiệu năng của hệ thống máy bán hàng tự động.\newline
 Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1COVcYWAQKlN}
 
-\subsection{Các Kịch bản Vận hành Ví dụ}
-
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
@@ -1190,74 +1188,7 @@ Xem thêm video trình diễn tại: \url{https://youtu.be/EFUxOFmGWq4?si=UAjL1C
     \label{fig:system_demo}
 \end{figure}
 
-\subsubsection{Kịch bản 1: Mua hàng Thành công}
-
-\textbf{Trạng thái Ban đầu:} Hệ thống nhàn rỗi trong chế độ WAIT\_SENSOR
-
-\begin{enumerate}[leftmargin=*]
-    \item Khách hàng tiếp cận trong phạm vi 20cm, hệ thống phát hiện sự hiện diện trong 3 giây
-    \item LCD hiển thị: "WELCOME TO DEMON KING STORE"
-    \item Sau 3 giây, danh sách sản phẩm xuất hiện: "1. SKT Jax" / "Impact"
-    \item Khách hàng nhấn 'D' năm lần để điều hướng đến sản phẩm \#6
-    \item LCD hiển thị: "6. SKT Renekton" / "Marin"
-    \item Khách hàng nhấn '\#' để xem chi tiết
-    \item LCD hiển thị: "Available: 9" / "Price: 30000 \#6"
-    \item Khách hàng nhấn '\#' lần nữa để xác nhận chọn
-    \item LCD hiển thị: "ENTER QUANTITY" / "(1 TO 9):"
-    \item Khách hàng nhập '2' cho hai đơn vị
-    \item Khách hàng nhấn '\#' để xác nhận
-    \item LCD hiển thị: "AMOUNT TO PAY" / "60000 VND" (trong 3 giây)
-    \item LCD chuyển sang: "INSERT MONEY:" / (khu vực nhập ở giữa)
-    \item Khách hàng nhập '50000' và nhấn '\#'
-    \item LCD hiển thị: "REMAINING:" / "10000 VND" (trong 3 giây)
-    \item LCD trở lại: "INSERT MONEY:"
-    \item Khách hàng nhập '10000' và nhấn '\#'
-    \item LCD hiển thị: "PAYMENT SUCCESS" / "CHANGE: 0 VND"
-    \item Sau 3 giây: "THANKS FOR SUP" / "DEMON KING STORE"
-    \item Kho hàng được cập nhật: Số lượng SKT Renekton giảm từ 9 xuống 7
-    \item Hệ thống trở lại chế độ chọn sản phẩm
-\end{enumerate}
-
-\textbf{Tổng Thời gian Giao dịch:} Khoảng 45 giây
-
-\subsubsection{Kịch bản 2: Xử lý Hết hàng}
-
-\begin{enumerate}[leftmargin=*]
-    \item Khách hàng điều hướng đến sản phẩm có số lượng 0
-    \item Nhấn '\#' để xem chi tiết
-    \item LCD hiển thị: "Available: 0" / "Price: 20000 \#1"
-    \item Khách hàng nhấn '\#' để thử mua
-    \item LCD ngay lập tức hiển thị: "OUT OF STOCK" / "CHOOSE ANOTHER"
-    \item Sau 3 giây hoặc bất kỳ lần nhấn phím nào, trở lại chi tiết sản phẩm
-    \item Khách hàng có thể nhấn '*' để trở lại danh sách sản phẩm
-\end{enumerate}
-
-\subsubsection{Kịch bản 3: Điều chỉnh Kho hàng Quản trị}
-
-\begin{enumerate}[leftmargin=*]
-    \item Từ chọn sản phẩm, quản trị viên nhấn phím 'R'
-    \item LCD hiển thị: "ENTER PASSWORD"
-    \item Quản trị viên nhập "070596" (hiển thị là *****)
-    \item Sau 6 chữ số: "SUCCESS LOG IN" / "ADMIN MODE"
-    \item Sau 3 giây: Danh sách sản phẩm xuất hiện
-    \item Quản trị viên điều hướng đến sản phẩm mong muốn sử dụng 'U'/'D'
-    \item Nhấn '\#' để vào chế độ điều chỉnh
-    \item LCD hiển thị: ">>>Avail: 9" / "Price: 30000"
-    \item Quản trị viên nhấn 'R' ba lần để tăng số lượng lên 12 (hiển thị lỗi ở mức tối đa 9)
-    \item Nhấn 'D' để chuyển sang điều chỉnh giá
-    \item LCD hiển thị: "Avail: 9" / ">>>Price: 30000"
-    \item Quản trị viên nhấn 'R' năm lần để tăng giá thêm 5000 VND
-    \item LCD hiển thị: "Avail: 9" / ">>>Price: 35000"
-    \item Quản trị viên nhấn '\#' để lưu
-    \item LCD hiển thị: "COMPLETE UPDATE" (trong 1.5 giây)
-    \item Trở lại chọn sản phẩm trong chế độ quản trị
-    \item Quản trị viên nhấn '*' sau đó '\#' để thoát chế độ quản trị
-    \item Hệ thống trở lại chế độ khách hàng bình thường
-\end{enumerate}
-
-\subsection{Độ tin cậy Hệ thống}
-
-Tất cả các đường dẫn lỗi được kiểm thử thành công:
+\textbf{Tất cả các đường dẫn lỗi được kiểm thử thành công:}
 
 \begin{itemize}[leftmargin=*]
     \item Đầu vào số lượng không hợp lệ bị từ chối chính xác và nhắc thử lại
